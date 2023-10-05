@@ -23,3 +23,53 @@ An alternative time all group members are available would be Wednesday 1PM, but 
 ### GitHub and R script
 Created R script and stored in GitHub
 
+## October 5 Team Meeting Notes
+### Housekeeping
+Meeting time changed to Wednesdays @ 1PM
+
+### Research Question and Aims
+
+5 AIMS:
+*  Parkinson's vs control looking at lipid pathways
+*  PD only, mental health factors (how does microbiome change in PD patients with depression/anxiety?)
+*  PD only, drug usage factors (how does microbiome change in PD patients that use drugs?)
+*  PD only, BMI factors (how does microbiome change in PD patients with different BMI values?)
+*  RNA seq data comparison to metabolic pathways
+      * split up aims between group members
+
+If research questions come back with negative answers, not an issue. There will be things to report, especially if we use RNA Seq data.
+
+### Code
+Use the researcher's code so that our analysis later on are validated and more concrete
+* replicate only to 2 cluster image, also want sufficient amounts of novel investigation/analysis
+
+PiCRUST analysis:
+* different pipeline on command line from QIIME2
+* different set of commands
+* need to outline steps we are going through for data processing
+
+PiCRUST outputs:
+* 3 tables given
+  * 1 represents metabolic pathways
+  * 1 represents enzymes
+    * can use this to assign to proteins rather than pathways if we want
+  * 1 represents metagenomic data
+
+### Serum metabolomics
+We should not work with this data; it is very hard to work with, the dataset is not well annotated, and it requires complicated software
+
+### For Next Week
+Start on proposal (main focus for next week)
+* split up work between group members to focus on different parts of the proposal
+* look at sample on canvas and follow their format
+* specify we are doing processing with QIIME and PiCRUST
+* Sample Timeline from Chris:
+  * Week 1/2 = QIIME and PiCRUST processing
+  * Week 3 = PD vs Control lipid processing
+  * Week 4/5 = look at diversity metrics
+* We can send parts of our proposal to Chris for review before it is due 
+
+Can start data processing with QIIME and PiCRUST (inform Chris which 2 individuals are going to do PiCRUST analysis)
+* denoise, cluster, find sampling depth, generate .qza files and change format for transfer to R
+
+
