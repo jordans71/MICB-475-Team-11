@@ -25,7 +25,7 @@ Created R script and stored in GitHub
 
 ## October 5 Team Meeting Notes
 ### Housekeeping
-Meeting time changed to Wednesdays @ 1PM
+**Meeting time changed to Wednesdays @ 1PM**
 
 ### Research Question and Aims
 
@@ -34,7 +34,7 @@ Meeting time changed to Wednesdays @ 1PM
 *  PD only, mental health factors (how does microbiome change in PD patients with depression/anxiety?)
 *  PD only, drug usage factors (how does microbiome change in PD patients that use drugs?)
 *  PD only, BMI factors (how does microbiome change in PD patients with different BMI values?)
-*  RNA seq data comparison to metabolic pathways
+*  RNA seq data (focus on human gene) comparison to metabolic pathways
       * split up aims between group members
 
 If research questions come back with negative answers, not an issue. There will be things to report, especially if we use RNA Seq data.
@@ -43,8 +43,8 @@ If research questions come back with negative answers, not an issue. There will 
 Use the researcher's code so that our analysis later on are validated and more concrete
 * replicate only to 2 cluster image, also want sufficient amounts of novel investigation/analysis
 
-PiCRUST analysis:
-* different pipeline on command line from QIIME2
+**PiCRUST analysis:**
+* different pipeline on the command line from QIIME2
 * different set of commands
 * need to outline steps we are going through for data processing
 
@@ -61,15 +61,17 @@ We should not work with this data; it is very hard to work with, the dataset is 
 ### For Next Week
 Start on proposal (main focus for next week)
 * split up work between group members to focus on different parts of the proposal
-* look at sample on canvas and follow their format
+* look at the sample proposal on Canvas and follow their format
 * specify we are doing processing with QIIME and PiCRUST
 * Sample Timeline from Chris:
   * Week 1/2 = QIIME and PiCRUST processing
-  * Week 3 = PD vs Control lipid processing
-  * Week 4/5 = look at diversity metrics
+  * Week 3 = PD vs. Control lipid processing
+  * Week 4/5 = Look at diversity metrics
+* Provide the Gantt Chart to visualize the timeline
+* Divide each aim into pieces and specify the corresponding approaches
 * We can send parts of our proposal to Chris for review before it is due 
 
 Can start data processing with QIIME and PiCRUST (inform Chris which 2 individuals are going to do PiCRUST analysis)
-* denoise, cluster, find sampling depth, generate .qza files and change format for transfer to R
+* denoise, cluster, find sampling depth, generate .qza files, and change format for transfer to R
 
 
