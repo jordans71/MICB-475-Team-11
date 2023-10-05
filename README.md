@@ -19,3 +19,7 @@ When reproducing figures for the project proposal, should we use code in the ori
 We have not started data processing yet 
 ### Is there any potential to change our meeting time? 
 An alternative time all group members are available would be Wednesday 1PM, but we understand if this change cannot be accommodate.
+
+### GitHub and R script
+Created R script and stored in GitHub
+
