@@ -18,4 +18,4 @@ What can we do with serum metabolomics? Is the format of the data such that func
 When reproducing figures for the project proposal, should we use code in the original paper? Do so exactly as the MICB 475 QIIME2 modules have outlined except for DADA2 denoising/clustering parameters? 
 We have not started data processing yet 
 ### Is there any potential to change our meeting time? 
-An alternative time all group members are available would be Wednesday 1PM, but we understand if this change cannot be accommodate
+An alternative time all group members are available would be Wednesday 1PM, but we understand if this change cannot be accommodate.
