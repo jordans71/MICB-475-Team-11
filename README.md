@@ -1,5 +1,23 @@
 # MICB-475-Team-11
 
+## Wednesday October 11th MICB 475 Meeting Agenda
+### RNA-sequencing: to proceed or not to with RNA-seq data?
+ * Access? If no access, will investigate lipid metabolism
+
+### On Canvas, there is a data processing checklist for the proposal. However, most of it concerns QIIME2 processing. Is there an equivalent for what we would need to accomplish in PICRUSt2? 
+* Aiming to get PICRUSt figures ready by the next team meeting. We were busy this week and have yet to start PICRUSt2 analysis
+
+### Proposal figures
+* When Evelyn mentioned having at least 1 figure in the proposal, did any of these need to be figures on the data? Or just graphical representations of our research direction (as show in the example proposals)
+* If we do need figures made from the dataset itself, should they be original (i.e. new investigations) or just reproducing the paper’s figures? 
+
+### Post data-processing
+* QIIME2 data processing started this week. Should processed files be put into Github? The documentation video on canvas mentioned keeping a digital notebook documenting what was done, with links to processed data/code, but did not detail how files should be stored besides this 
+
+### Tips for how MICB 475 workload should be split 
+Our current plan right now is to split 1) the proposal by section and 2) coding work by QIIME2 processing + R, PICRSt2, and RNA-Seq analysis (if available) 
+Wanted to ask how previous MICB 475 teams splitted workload and what you’d recommend for us to be successful 
+
 ## Thursday October 5th MICB 475 Meeting Agenda
 ### Research Question
 After reading the PD paper in greater detail, we realized that [Cristea et al. (2020)](https://movementdisorders.onlinelibrary.wiley.com/doi/10.1002/mds.28052)  already did PICRUSt2 analysis [(supplementary figure 4)](https://movementdisorders.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fmds.28052&file=mds28052-sup-0002-FigureS1.pdf). Control microbiota was enriched for dietary carbohydrate degradation, PD microbiota rich in nucleic acid degradation & amino acid degradation 
