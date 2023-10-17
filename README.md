@@ -93,3 +93,50 @@ Can start data processing with QIIME and PiCRUST (inform Chris which 2 individua
 * denoise, cluster, find sampling depth, generate .qza files, and change format for transfer to R
 
 
+## October 11 Team Meeting Notes
+### General notes
+* Don't have RNA seq data that we thought we did
+  * If we did use it as a last aim, it wouldn't be so involved - would be taking results of other papers (lit review) and commenting on similar changes.
+
+### For Next Meeting
+* Focus on proposal first
+* Don't worry about picrust figures
+
+### Proposal
+* Make flow chart of workflow
+* Dataset overview
+   * Table
+      * Might need to have 2 figures (1 for QIIME, 1 for PiCRUST
+* Don't need to have diversity metric plots
+* Checklist done for QIIME
+   * For PiCRUST:
+      * Count as an additional check in the overview checklist
+      * Just need required files (rep seqs, table)
+
+### Preprocessing Steps
+* New column = anxiety score binned
+   * have categorical groups high or low anxiety
+   * 80 or over = high anxiety
+* For depression, can look at 'yes/no' column, or categorize numerical ones
+   * should do literature review to understand what scores constitue high/medium/low classification
+* Take out less than 5 reads from no mitochondria / no chloroplast table for start with PiCRUST analysis
+   * or else PiCRUST runs slowly, and they all get filtered out anyways
+
+### Aims Updates
+* Looking at links between PD patients' gut microbiome and metabolic function with respect to depression
+   * Bin metadata
+   * Diversity metrics
+   * PiCRUST
+* Looking at links between PD patients' gut microbiome and metabolic function with respect to anxiety
+   * Bin metadata
+   * Diversity metrics
+   * PiCRUST
+* Looking at links between PD patients' gut microbiome and metabolic function with respect to fatigue
+   * Bin metadata
+   * Diversity metrics
+   * PiCRUST
+
+### Splitting work
+* Can split work based on aims (chosen method) or based on analysis
+   * Group members will either be doing PiCRUST and R analysis on Depression aim, or Anxiety and Fatigue aim
+  
