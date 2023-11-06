@@ -113,12 +113,24 @@ biom convert \
 
 qiime tools export --input-path /data/parkinsons_project/rep-seqs.qza --output-path ./parkinsons_export/seqs_export
 
+## Filter ASV fewer than 5 ## 
 qiime feature-table filter-features \
 	--i-table table-no-mitochondria-no-chloroplast.qza \
 	--p-min-frequency 5 \
 	--o-filtered-table feature-frequency-filtered-table.qza
 
+# Visualize ASVs stats
 qiime feature-table summarize \
    --i-table feature-frequency-filtered-table.qza \
    --o-visualization feature-frequency-filtered-table.qzv \
    --m-sample-metadata-file /mnt/datasets/project_2/parkinsons/parkinsons_metadata.txt 
+
+# Export Filtered Table (rid of ASV < 5)
+qiime tools export \
+	--input-path /data/parkinsons_project/feature-frequency-filtered-table.qza \
+	--output-path /data/parkinsons_project/parkinsons_export/table_export
+
+cd table_export
+biom convert \
+-i feature-table.biom \
+--to-tsv -o feature-table.txt
