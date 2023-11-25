@@ -30,7 +30,7 @@ abundance_data  =as.data.frame(abundance_data)
 
 metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
 
-#Filter your metadata as needed to look at specific comparisons
+#Filter metadata for control samples
 PD_metadata = metadata %>%
   filter(Disease == "Control")
 
@@ -63,11 +63,6 @@ abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
 
-# Generate pathway heatmap
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
-feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
-
 ## Generate Heatmap with Description ##
 # Add description of the metabolic pathways to filtered abundance data, relocate the description to the first column
 abundance_data_filtered_with_description <- cbind(abundance_data_filtered, description = metacyc_daa_annotated_results_df$description) %>%
@@ -84,6 +79,7 @@ sp_control_heatmap
 
 # Generate pathway PCA plot
 sp_control_pca <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "Sleep_problems")
+sp_control_pca
 
 #Generate Log2Fold Change plot 
 res =  DEseq2_function(abundance_data_filtered,PD_metadata,"Sleep_problems")
@@ -99,5 +95,6 @@ sp_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.nu
   geom_bar(stat = "identity")+
   theme_bw()+
   labs(x = "Log2FoldChange", y="Pathways")
+sp_control_log
 
 
