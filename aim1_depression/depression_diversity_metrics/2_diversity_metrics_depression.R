@@ -3,6 +3,7 @@ library(ape)
 library(tidyverse)
 library(picante)
 library(gridExtra)
+library(ggplot2)
 library(ggside)
 
 ### Load in RData ###
@@ -35,7 +36,7 @@ plot.pd
 
 ### Beta Diversity ###
 ## Jaccard ##
-jac_dm <- distance(parkinsons_rare, method = "jaccard", binary = T)
+jac_dm <- distance(parkinsons_rare, method = "jaccard", binary = TRUE)
 pcoa_jac <- ordinate(parkinsons_rare, method = "PCoa", distance = jac_dm)
 gg_jac_pcoa <- plot_ordination(parkinsons_rare, pcoa_jac, color = "depression_binned") +
   labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) 
@@ -70,14 +71,7 @@ pcoa_unifrac <- ordinate(parkinsons_rare, method = "PCoA", distance = unifrac_dm
 gg_unifrac_pcoa <- plot_ordination(parkinsons_rare, pcoa_unifrac, color = "depression_binned") +
   labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
   labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
-  ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), 
-                            orientation = "y") +
-  ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), 
-                            orientation = "x") +
-  ggside::scale_xsidey_discrete(labels = NULL) +
-  ggside::scale_ysidex_discrete(labels = NULL) +
-  ggside::theme_ggside_void() 
+  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) 
 gg_unifrac_pcoa
 
 ggsave("unifrac_pcoa.png"
@@ -90,14 +84,7 @@ pcoa_w_unifrac <- ordinate(parkinsons_rare, method="PCoA", distance=w_unifrac_dm
 gg_wunifrac_pcoa <- plot_ordination(parkinsons_rare, pcoa_w_unifrac, color = "depression_binned") +
   labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
   labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
-  ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), 
-                            orientation = "y") +
-  ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), 
-                            orientation = "x") +
-  ggside::scale_xsidey_discrete(labels = NULL) +
-  ggside::scale_ysidex_discrete(labels = NULL) +
-  ggside::theme_ggside_void() 
+  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5))
 gg_wunifrac_pcoa
 
 ggsave("wunifrac_pcoa.png"
