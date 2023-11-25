@@ -64,7 +64,6 @@ metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_
 
 ## Generate Heatmap with Description ##
 # Add description of the metabolic pathways to filtered abundance data, relocate the description to the first column
-feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 abundance_data_filtered_with_description <- cbind(abundance_data_filtered, description = metacyc_daa_annotated_results_df$description) %>%
   relocate(description)
 
@@ -80,8 +79,8 @@ sp_PD_heatmap
 # Generate pathway PCA plot
 # Please change column_to_rownames() to the feature column if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
-sp_PD_heatmap <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "Sleep_problems")
-sp_PD_heatmap
+sp_PD_pca <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "Sleep_problems")
+sp_PD_pca
 
 res =  DEseq2_function(abundance_data_filtered,PD_metadata,"Sleep_problems")
 res$feature =rownames(res)
