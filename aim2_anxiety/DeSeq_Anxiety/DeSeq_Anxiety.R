@@ -1,11 +1,21 @@
 #!/usr/bin/env Rscript
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+pkgs <- c("phyloseq", "ALDEx2", "SummarizedExperiment", "Biobase", "devtools", 
+          "ComplexHeatmap", "BiocGenerics", "BiocManager", "metagenomeSeq", 
+          "Maaslin2", "edgeR", "lefser", "limma", "KEGGREST", "DESeq2")
+for (pkg in pkgs) {
+  if (!requireNamespace(pkg, quietly = TRUE))
+    BiocManager::install(pkg)
+}
+
 library(tidyverse)
 library(phyloseq)
 library(DESeq2)
 
 
 #### Load data ####
-load("~/parkinsons_project_2/DeSeq_Anxiety/parkinsons_final_anxiety.RData")
 
 #### DESeq ####
 
