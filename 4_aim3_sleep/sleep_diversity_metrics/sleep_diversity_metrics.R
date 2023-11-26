@@ -70,20 +70,20 @@ parkinsons_rare <- rarefy_even_depth(parkinsons_final, rngseed = 1, sample.size 
 save(parkinsons_final, file = "parkinsons_sleep_problems_disease_final.RData")
 save(parkinsons_rare, file = "parkinsons_sleep_problems_disease_rare.RData")
 
-# Remove samples where anxiety is na
-parkinsons_final_sleep_problems_problems_problems <- subset_samples(parkinsons_rare, Sleep_problems != "")
-View(sample_data(parkinsons_final_sleep_problems_problems))
-save(parkinsons_final_sleep_problems_problems, file="parkinsons_final_sleep_problems_problems.RData")
+# Remove samples where sleep_problems is na
+parkinsons_final_sleep_problems <- subset_samples(parkinsons_rare, Sleep_problems != "")
+View(sample_data(parkinsons_final_sleep_problems))
+save(parkinsons_final_sleep_problems, file="parkinsons_final_sleep_problems.RData")
 
-load("parkinsons_final_sleep_problems_problems.RData")
+load("parkinsons_final_sleep_problems.RData")
 
 ### Alpha Diversity ###
-gg_richness <- plot_richness(parkinsons_final_sleep_problems_problems, x = "Sleep_problems_binned_Disease") + 
+gg_richness <- plot_richness(parkinsons_final_sleep_problems, x = "Sleep_problems_binned_Disease") + 
   xlab("sleep_PD_Status") + geom_boxplot()
 gg_richness
 
 ###Statistical analysis 
-samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_sleep_problems_problems), estimate_richness(parkinsons_final_sleep_problems_problems))
+samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_sleep_problems), estimate_richness(parkinsons_final_sleep_problems))
 
 ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=Sleep_problems, y=Shannon)) +
   facet_grid(~factor(`Disease`, levels=c("PD","Control")))
@@ -208,8 +208,95 @@ gg_wunifrac_pcoa_ctrl <- plot_ordination(parkinsons_final_sleep_problems, pcoa_w
   ggside::theme_ggside_void() 
 gg_wunifrac_pcoa_ctrl
 
-sleep_jac <- grid.arrange(PD_anxiety_jac, PD_sleep_bray,ctrl_sleep_jac, ctrl_sleep_bray, ncol =2)
+sleep_jac <- grid.arrange(PD_sleep_problems_jac, PD_sleep_bray,ctrl_sleep_jac, ctrl_sleep_bray, ncol =2)
 ggsave(filename = "sleep_bray_jac.png", sleep_jac)
 
 sleep_unifrac <- grid.arrange(gg_unifrac_pcoa_PD, gg_wunifrac_pcoa_PD,gg_unifrac_pcoa_ctrl, gg_wunifrac_pcoa_ctrl, ncol = 2)
 ggsave(filename = "sleep_unifrac.png", sleep_unifrac)
+
+#################################################################################
+###############################################################BETA_ALTOGETHER
+## Jaccard -- altogether ##
+jac_dm <- distance(parkinsons_final_sleep_problems, method = "jaccard", binary = TRUE)
+pcoa_jac <- ordinate(parkinsons_final_sleep_problems, method = "NMDS", distance = jac_dm)
+gg_jac_pcoa <- plot_ordination(parkinsons_final_sleep_problems, pcoa_jac, color = "Sleep_problems_binned_Disease") +
+  labs(col = "sleep_problems and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggside::geom_xsideboxplot(aes(fill = Sleep_problems_binned_Disease, y = Sleep_problems_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = Sleep_problems_binned_Disease, x = Sleep_problems_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() +
+  ggtitle("Jaccard") + theme(plot.title = element_text(hjust=0.5))
+gg_jac_pcoa
+
+ggsave("sleep_problems_jac_pcoa.png"
+       , gg_jac_pcoa
+       , height=4, width=6)
+
+adonis2(jac_dm ~ `Sleep_problems`*Disease, data = samp_dat_wdiv)
+
+## bray curtis ##
+bray_dm <- distance(parkinsons_final_sleep_problems, method = "bray")
+pcoa_bray <- ordinate(parkinsons_final_sleep_problems, method = "PCoA", distance = bray_dm)
+gg_bray_pcoa <- plot_ordination(parkinsons_final_sleep_problems, pcoa_bray, color = "Sleep_problems_binned_Disease") +
+  labs(col = "sleep_problems and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Bray Curtis") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggside::geom_xsideboxplot(aes(fill = Sleep_problems_binned_Disease, y = Sleep_problems_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = Sleep_problems_binned_Disease, x = Sleep_problems_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
+gg_bray_pcoa
+
+ggsave("sleep_problems_bray_pcoa.png"
+       , gg_bray_pcoa
+       , height=4, width=6)
+
+adonis2(bray_dm ~ `Sleep_problems`*Disease, data = samp_dat_wdiv)
+
+## unweighted unifrac ##
+unifrac_dm <- distance(parkinsons_final_sleep_problems, method = "unifrac")
+pcoa_unifrac <- ordinate(parkinsons_final_sleep_problems, method = "PCoA", distance = unifrac_dm)
+gg_unifrac_pcoa <- plot_ordination(parkinsons_final_sleep_problems, pcoa_unifrac, color = "Sleep_problems_binned_Disease") +
+  labs(col = "sleep_problems and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5))+
+  ggside::geom_xsideboxplot(aes(fill = Sleep_problems_binned_Disease, y = Sleep_problems_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = Sleep_problems_binned_Disease, x = Sleep_problems_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
+gg_unifrac_pcoa
+
+ggsave("sleep_problems_unifrac_pcoa.png"
+       , gg_unifrac_pcoa
+       , height=4, width=6)
+
+adonis2(unifrac_dm ~ `Sleep_problems`*Disease, data = samp_dat_wdiv)
+
+## weighted_unifrac ##
+w_unifrac_dm <- distance(parkinsons_final_sleep_problems, method ="wunifrac")
+pcoa_w_unifrac <- ordinate(parkinsons_final_sleep_problems, method="PCoA", distance=w_unifrac_dm)
+gg_wunifrac_pcoa <- plot_ordination(parkinsons_final_sleep_problems, pcoa_w_unifrac, color = "Sleep_problems_binned_Disease") +
+  labs(col = "sleep_problems and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggside::geom_xsideboxplot(aes(fill = Sleep_problems_binned_Disease, y = Sleep_problems_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = Sleep_problems_binned_Disease, x = Sleep_problems_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
+gg_wunifrac_pcoa
+
+ggsave("sleep_problems_wunifrac_pcoa.png"
+       , gg_wunifrac_pcoa
+       , height=4, width=6)
+
+adonis2(w_unifrac_dm ~ `Sleep_problems`*Disease, data = samp_dat_wdiv)
+
