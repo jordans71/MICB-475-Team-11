@@ -45,7 +45,7 @@ PD_metadata = metadata %>%
   filter(Disease == "PD")
 #Remove NAs for anxitey
 
-PD_metadata = PD_metadata[!is.na(PD_metadata$anxitey_binned),]
+PD_metadata = PD_metadata[!is.na(PD_metadata$anxiety_binned),]
 
 #Filtering the abundance table to only include samples that are in the filtered metadata
 sample_names = PD_metadata$`X.SampleID`
@@ -69,7 +69,7 @@ PD_metadata = PD_metadata[PD_metadata$`X.SampleID` %in% abun_samples,] #making s
 
 
 #Perform pathway DAA using DESeq2 method
-abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxitey_binned", daa_method = "DESeq2")
+abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned", daa_method = "DESeq2")
 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
@@ -92,14 +92,14 @@ abundance_desc = inner_join(abundance,metacyc_daa_annotated_results_df, by = "fe
 abundance_desc$feature = abundance_desc$description
 abundance_desc = abundance_desc[,-c(77:ncol(abundance_desc))]
 
-pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "anxitey_binned")
+pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "anxiety_binned")
 
 # Generate pathway PCA plot
 # Please change column_to_rownames() to the feature column if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
-pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxitey_binned")
+pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned")
 
-res =  DEseq2_function(abundance_data_filtered,PD_metadata,"anxitey_binned")
+res =  DEseq2_function(abundance_data_filtered,PD_metadata,"anxiety_binned")
 res$feature =rownames(res)
 res_desc = inner_join(res,metacyc_daa_annotated_results_df, by = "feature")
 res_desc = res_desc[, -c(8:13)]
