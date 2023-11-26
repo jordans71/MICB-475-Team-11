@@ -71,19 +71,19 @@ save(parkinsons_final, file = "parkinsons_sleep_problems_disease_final.RData")
 save(parkinsons_rare, file = "parkinsons_sleep_problems_disease_rare.RData")
 
 # Remove samples where anxiety is na
-parkinsons_final_sleep_problems <- subset_samples(parkinsons_rare, Sleep_problems != "")
-View(sample_data(parkinsons_final_sleep_problems))
-save(parkinsons_final_sleep_problems, file="parkinsons_final_sleep_problems.RData")
+parkinsons_final_sleep_problems_problems_problems <- subset_samples(parkinsons_rare, Sleep_problems != "")
+View(sample_data(parkinsons_final_sleep_problems_problems))
+save(parkinsons_final_sleep_problems_problems, file="parkinsons_final_sleep_problems_problems.RData")
 
-load("parkinsons_final_sleep_problems.RData")
+load("parkinsons_final_sleep_problems_problems.RData")
 
 ### Alpha Diversity ###
-gg_richness <- plot_richness(parkinsons_final_sleep_problems, x = "Sleep_problems_binned_Disease") + 
+gg_richness <- plot_richness(parkinsons_final_sleep_problems_problems, x = "Sleep_problems_binned_Disease") + 
   xlab("sleep_PD_Status") + geom_boxplot()
 gg_richness
 
 ###Statistical analysis 
-samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_sleep_problems), estimate_richness(parkinsons_final_sleep_problems))
+samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_sleep_problems_problems), estimate_richness(parkinsons_final_sleep_problems_problems))
 
 ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=Sleep_problems, y=Shannon)) +
   facet_grid(~factor(`Disease`, levels=c("PD","Control")))
@@ -102,9 +102,9 @@ summary(ml_sleep_sub)
 ### Beta Diversity ###
 ## Jaccard ## 
 #PD patients
-jac_dm <- distance(PD_patients, method = "jaccard", binary = T)
-pcoa_jac_PD <- ordinate(PD_patients, method = "NMDS", distance = jac_dm)
-PD_sleep_jac <- plot_ordination(PD_patients, pcoa_jac_PD, color = "Sleep_problems") +
+jac_dm <- distance(parkinsons_final_sleep_problems, method = "jaccard", binary = T)
+pcoa_jac_PD <- ordinate(parkinsons_final_sleep_problems, method = "NMDS", distance = jac_dm)
+PD_sleep_jac <- plot_ordination(parkinsons_final_sleep_problems, pcoa_jac_PD, color = "Sleep_problems") +
   labs(col = "Sleep Problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = Sleep_problems, x = Sleep_problems), orientation = "x") +
@@ -115,9 +115,9 @@ PD_sleep_jac <- plot_ordination(PD_patients, pcoa_jac_PD, color = "Sleep_problem
 PD_sleep_jac
 
 #Healthy Controls
-jac_dm_ctrl <- distance(ctrl_patients, method = "jaccard", binary = T)
-pcoa_jac_ctrl <- ordinate(ctrl_patients, method = "NMDS", distance = jac_dm_ctrl)
-ctrl_sleep_jac <- plot_ordination(ctrl_patients, pcoa_jac_ctrl, color = "Sleep_problems") + 
+jac_dm_ctrl <- distance(parkinsons_final_sleep_problems, method = "jaccard", binary = T)
+pcoa_jac_ctrl <- ordinate(parkinsons_final_sleep_problems, method = "NMDS", distance = jac_dm_ctrl)
+ctrl_sleep_jac <- plot_ordination(parkinsons_final_sleep_problems, pcoa_jac_ctrl, color = "Sleep_problems") + 
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = Sleep_problems, x = Sleep_problems), orientation = "x") +
@@ -129,9 +129,9 @@ ctrl_sleep_jac
 
 ##Bray-Curtis ##
 # PD patients
-bc_dm <- distance(PD_patients, method="bray")
-pcoa_bc <- ordinate(PD_patients, method="PCoA", distance=bc_dm)
-PD_sleep_bray <- plot_ordination(PD_patients, pcoa_bc, color = "Sleep_problems") + 
+bc_dm <- distance(parkinsons_final_sleep_problems, method="bray")
+pcoa_bc <- ordinate(parkinsons_final_sleep_problems, method="PCoA", distance=bc_dm)
+PD_sleep_bray <- plot_ordination(parkinsons_final_sleep_problems, pcoa_bc, color = "Sleep_problems") + 
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = Sleep_problems, x = Sleep_problems), orientation = "x") +
@@ -142,9 +142,9 @@ PD_sleep_bray <- plot_ordination(PD_patients, pcoa_bc, color = "Sleep_problems")
 PD_sleep_bray
 
 ## Healthy controls
-bc_dm_ctrl <- distance(ctrl_patients, method="bray")
-pcoa_bc_ctrl <- ordinate(ctrl_patients, method="PCoA", distance=bc_dm_ctrl)
-ctrl_sleep_bray <- plot_ordination(ctrl_patients, pcoa_bc_ctrl, color = "Sleep_problems") + 
+bc_dm_ctrl <- distance(parkinsons_final_sleep_problems, method="bray")
+pcoa_bc_ctrl <- ordinate(parkinsons_final_sleep_problems, method="PCoA", distance=bc_dm_ctrl)
+ctrl_sleep_bray <- plot_ordination(parkinsons_final_sleep_problems, pcoa_bc_ctrl, color = "Sleep_problems") + 
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = Sleep_problems, x = Sleep_problems), orientation = "x") +
@@ -156,9 +156,9 @@ ctrl_sleep_bray
 
 ## Unweighted Unifrac ##
 #PD patients 
-unifrac_dm_PD <- distance(PD_patients, method = "unifrac")
-pcoa_unifrac_PD <- ordinate(PD_patients, method = "PCoA", distance = unifrac_dm_PD)
-gg_unifrac_pcoa_PD <- plot_ordination(PD_patients, pcoa_unifrac_PD, color = "Sleep_problems") +
+unifrac_dm_PD <- distance(parkinsons_final_sleep_problems, method = "unifrac")
+pcoa_unifrac_PD <- ordinate(parkinsons_final_sleep_problems, method = "PCoA", distance = unifrac_dm_PD)
+gg_unifrac_pcoa_PD <- plot_ordination(parkinsons_final_sleep_problems, pcoa_unifrac_PD, color = "Sleep_problems") +
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggtitle("PD Sleep Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
@@ -169,9 +169,9 @@ gg_unifrac_pcoa_PD <- plot_ordination(PD_patients, pcoa_unifrac_PD, color = "Sle
 gg_unifrac_pcoa_PD
 
 #Healthy Controls
-unifrac_dm_ctrl <- distance(ctrl_patients, method = "unifrac")
-pcoa_unifrac_ctrl <- ordinate(ctrl_patients, method = "PCoA", distance = unifrac_dm_ctrl)
-gg_unifrac_pcoa_ctrl <- plot_ordination(ctrl_patients, pcoa_unifrac_ctrl, color = "Sleep_problems") +
+unifrac_dm_ctrl <- distance(parkinsons_final_sleep_problems, method = "unifrac")
+pcoa_unifrac_ctrl <- ordinate(parkinsons_final_sleep_problems, method = "PCoA", distance = unifrac_dm_ctrl)
+gg_unifrac_pcoa_ctrl <- plot_ordination(parkinsons_final_sleep_problems, pcoa_unifrac_ctrl, color = "Sleep_problems") +
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggtitle("Healthy Sleep Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
@@ -183,9 +183,9 @@ gg_unifrac_pcoa_ctrl
 
 ## Weighted Unifrac ##
 #PD patients 
-w_unifrac_dm_PD <- distance(PD_patients, method ="wunifrac")
-pcoa_w_unifrac_PD <- ordinate(PD_patients, method="PCoA", distance=w_unifrac_dm_PD)
-gg_wunifrac_pcoa_PD <- plot_ordination(PD_patients, pcoa_w_unifrac_PD, color = "Sleep_problems") +
+w_unifrac_dm_PD <- distance(parkinsons_final_sleep_problems, method ="wunifrac")
+pcoa_w_unifrac_PD <- ordinate(parkinsons_final_sleep_problems, method="PCoA", distance=w_unifrac_dm_PD)
+gg_wunifrac_pcoa_PD <- plot_ordination(parkinsons_final_sleep_problems, pcoa_w_unifrac_PD, color = "Sleep_problems") +
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggtitle("PD Sleep Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
@@ -196,9 +196,9 @@ gg_wunifrac_pcoa_PD <- plot_ordination(PD_patients, pcoa_w_unifrac_PD, color = "
 gg_wunifrac_pcoa_PD
 
 #Healthy Controls
-w_unifrac_dm_ctrl <- distance(ctrl_patients, method ="wunifrac")
-pcoa_w_unifrac_ctrl <- ordinate(ctrl_patients, method="PCoA", distance=w_unifrac_dm_ctrl)
-gg_wunifrac_pcoa_ctrl <- plot_ordination(ctrl_patients, pcoa_w_unifrac_ctrl, color = "Sleep_problems") +
+w_unifrac_dm_ctrl <- distance(parkinsons_final_sleep_problems, method ="wunifrac")
+pcoa_w_unifrac_ctrl <- ordinate(parkinsons_final_sleep_problems, method="PCoA", distance=w_unifrac_dm_ctrl)
+gg_wunifrac_pcoa_ctrl <- plot_ordination(parkinsons_final_sleep_problems, pcoa_w_unifrac_ctrl, color = "Sleep_problems") +
   labs(col = "Sleep_problems") + theme_bw() + stat_ellipse(level = 0.95) +
   ggtitle("Healthy Sleep Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = Sleep_problems, y = Sleep_problems), orientation = "y") +
