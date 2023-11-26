@@ -13,6 +13,7 @@ for (pkg in pkgs) {
 library(tidyverse)
 library(phyloseq)
 library(DESeq2)
+library(ggplot2)
 
 
 #### Load data ####
@@ -20,11 +21,11 @@ library(DESeq2)
 #### DESeq ####
 
 anxiety_plus1 <- transform_sample_counts(parkinsons_final_anxiety, function(x) x+1)
-anxiety_deseq <- phyloseq_to_deseq2(anxiety_plus1, ~`anxitey_binned`)
+anxiety_deseq <- phyloseq_to_deseq2(anxiety_plus1, ~`anxiety_binned`)
 DESEQ_anxiety <- DESeq(anxiety_deseq)
 res <- results(DESEQ_anxiety, tidy=TRUE, 
                #this will ensure that No is your reference group
-               contrast = c("anxitey_binned","High","Low"))
+               contrast = c("anxiety_binned","High","Low"))
 View(res)
 
 ## Volcano plot: effect size VS significance
