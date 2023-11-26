@@ -1,6 +1,10 @@
 # MICB-475-Team-11
+<<<<<<< HEAD
 Hello
 
+=======
+edit
+>>>>>>> 2f869fe43b7c0a6a9b81f4d0086ca40f94e94966
 ## Wednesday October 11th MICB 475 Meeting Agenda
 ### RNA-sequencing: to proceed or not to with RNA-seq data?
  * Access? If no access, will investigate lipid metabolism
