@@ -1,5 +1,3 @@
-install.packages("ggpicrust2")
-
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
@@ -11,10 +9,6 @@ for (pkg in pkgs) {
   if (!requireNamespace(pkg, quietly = TRUE))
     BiocManager::install(pkg)
 }
-
-install.packages("tidyverse")
-install.packages("DESeq2")
-
 
 library(readr)
 library(ggpicrust2)
@@ -42,9 +36,8 @@ metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
 PD_metadata = metadata %>%
   filter(Disease == "Control")
 
-
 #Remove NAs for depression_binned
-PD_metadata = PD_metadata[!is.na(PD_metadata$anxitey_binned),]
+PD_metadata = PD_metadata[!is.na(PD_metadata$anxiety_binned),]
 
 #Filtering the abundance table to only include samples that are in the filtered metadata
 sample_names = PD_metadata$`X.SampleID`
@@ -67,7 +60,7 @@ abun_samples = rownames(t(abundance_data_filtered[,-1])) #Getting a list of the 
 PD_metadata = PD_metadata[PD_metadata$`X.SampleID` %in% abun_samples,] #making sure the filtered metadata only includes these samples
 
 #Perform pathway DAA using DESEQ2 method
-abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxitey_binned", daa_method = "DESeq2")
+abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned", daa_method = "DESeq2")
 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
@@ -75,7 +68,6 @@ metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_
 # Generate pathway heatmap
 # Please change column_to_rownames() to the feature column (instead of pathway) if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
-
 feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 
 #Changing the pathway column to description for the results 
@@ -92,15 +84,15 @@ abundance_desc$feature = abundance_desc$description
 abundance_desc = abundance_desc[,-c(58:ncol(abundance_desc))]
 
 pathway_heatmap(abundance = abundance_desc %>% 
-                  column_to_rownames("feature"), metadata = PD_metadata, group = "anxitey_binned")
+                  column_to_rownames("feature"), metadata = PD_metadata, group = "anxiety_binned")
 
 # Generate pathway PCA plot
 # Please change column_to_rownames() to the feature column if you are not using example dataset
 # Please change group to "your_group_column" if you are not using example dataset
 pathway_pca(abundance = abundance_data_filtered %>% 
-              column_to_rownames("pathway"), metadata = PD_metadata, group = "anxitey_binned")
+              column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned")
 
-res =  DEseq2_function(abundance_data_filtered,PD_metadata,"anxitey_binned")
+res =  DEseq2_function(abundance_data_filtered,PD_metadata,"anxiety_binned")
 res$feature =rownames(res)
 res_desc = inner_join(res,metacyc_daa_annotated_results_df, by = "feature")
 res_desc = res_desc[, -c(8:13)]
