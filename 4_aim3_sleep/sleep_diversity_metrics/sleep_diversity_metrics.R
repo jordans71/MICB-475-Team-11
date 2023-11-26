@@ -10,7 +10,7 @@ load("parkinsons_final_sleep.RData")
 
 ### Alpha Diversity of PD Patients ###
 #filter for PD patients and remove NAs
-PD_patients <- subset_samples(parkinsons_final_sleep, `Disease` == "PD", !is.na(anxitey_binned))
+PD_patients <- subset_samples(parkinsons_final_sleep, `Disease` == "PD", !is.na(Sleep_problems))
 
 #Plot Alpha Diversity Metrics for PD patients with sleep problems
 gg_richness_sleep <- plot_richness(PD_patients, x = "Sleep_problems") +
@@ -23,7 +23,7 @@ ggsave(filename = "Alpha_diversity_PD_sleep.png"
 
 #Alpha_Diversity with control patients 
 #filter for control patients and remove NAs
-ctrl_patients <- subset_samples(parkinsons_final_sleep, `Disease` == "Control", !is.na(anxitey_binned))
+ctrl_patients <- subset_samples(parkinsons_final_sleep, `Disease` == "Control", !is.na(Sleep_problems))
 
 gg_richness_ctrl_sleep <- plot_richness(ctrl_patients, x = "Sleep_problems") +
   xlab("Control Sleep Problems") + geom_boxplot() + ggtitle("Control Sleep Alpha Diversity Metrics") +
