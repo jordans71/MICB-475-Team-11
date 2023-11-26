@@ -43,6 +43,7 @@ anxiety_vol_plot <- res %>%
 ggsave(filename="anxiety_volcano_plot.png",anxiety_vol_plot)
 
 
+
 # To get table of results
 sigASVs <- res %>% 
   filter(padj<0.01 & abs(log2FoldChange)>2) %>%
