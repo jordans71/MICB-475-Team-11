@@ -1,39 +1,103 @@
+### Load libraries ###
 library(phyloseq)
-library(ape)
+library(ape) 
 library(tidyverse)
-library(picante)
 library(vegan)
-library(gridExtra)
 
-#### Load in RData ####
+#add column combining anxiety_binned and Disease status data
+meta <- read.csv("parkinsons_metadata_new_edited.csv")
+
+anx_Disease_meta <- meta %>% unite("anxiety_binned_Disease", 
+                                   anxiety_binned, Disease, remove=F)
+### Load data for phyloseq object ###
+meta <- anx_Disease_meta
+
+otufp <- "feature-table.txt"
+otu <- read_delim(file = otufp, delim = "\t", skip =1)
+
+taxfp <- "taxonomy.tsv"
+tax <- read_delim(taxfp, delim = "\t")
+
+phylotreefp <- "tree.nwk"
+phylotree <- read.tree(phylotreefp)
+
+### Format OTU table ###
+otu_mat <- as.matrix(otu[,-1])
+rownames(otu_mat) <- otu$'#OTU ID'
+OTU <- otu_table(otu_mat, taxa_are_rows = TRUE)
+
+### Format sample metadata ###
+samp_df <- as.data.frame(meta[,-1])
+rownames(samp_df) <- meta$'X.SampleID'
+
+#Make phyloseq sample data with sample_data() function
+SAMP <- sample_data(samp_df)
+
+### Formatting taxonomy ###
+#convert taxon strings to a table with separate taxa rank columns 
+tax_mat <- tax %>% select(-Confidence)%>%
+  separate(col=Taxon, sep="; "
+           , into = c("Domain","Phylum","Class","Order","Family","Genus","Species")) %>%
+  as.matrix() 
+
+# Save everything except feature IDs 
+tax_mat <- tax_mat[,-1]
+
+# Make sampleids the rownames
+rownames(tax_mat) <- tax$`Feature ID`
+
+# Make taxa table
+TAX <- tax_table(tax_mat)
+
+### Make phyloseq object ###
+parkinsons <- phyloseq(OTU, SAMP, TAX, phylotree)
+
+### Analyze phyloseq object ###
+#Remove non-bacterial sequences if any
+parkinsons_filt <- subset_taxa(parkinsons,  Domain == "d__Bacteria" & Class!="c__Chloroplast" & Family !="f__Mitochondria")
+
+#Remove ASVs with less than 5 counts total 
+parkinsons_filtnolow <- filter_taxa(parkinsons_filt, function(x) sum(x)>5, prune = TRUE) 
+
+# Remove samples with less than 100 reads
+parkinsons_final <- prune_samples(sample_sums(parkinsons_filtnolow)>100, parkinsons_filtnolow)
+
+# Rarefy samples for diversity metrics
+rarecurve(t(as.data.frame(otu_table(parkinsons_final))), cex=0.1) 
+parkinsons_rare <- rarefy_even_depth(parkinsons_final, rngseed = 1, sample.size = 3797) 
+
+save(parkinsons_final, file = "parkinsons_anxiety_disease_final.RData")
+save(parkinsons_rare, file = "parkinsons_anxiety_disease_rare.RData")
+
+# Remove samples where anxiety is na
+parkinsons_final_anxiety <- subset_samples(parkinsons_rare, !is.na(anxiety_binned))
+View(sample_data(parkinsons_final_anxiety))
+save(parkinsons_final_anxiety, file="parkinsons_final_anxiety.RData")
+
 load("parkinsons_final_anxiety.RData")
 
-### Alpha Diversity of PD Patients ###
-#filter for PD patients and remove NAs
-PD_patients <- subset_samples(parkinsons_final_anxiety, `Disease` == "PD", !is.na(anxiety_binned))
+### Alpha Diversity ###
+gg_richness <- plot_richness(parkinsons_final_anxiety, x = "anxiety_binned_Disease") + 
+  xlab("anxiety_PD_Status") + geom_boxplot()
+gg_richness
 
-#Plot Alpha Diversity Metrics for PD patients with anxiety 
-gg_richness_anxiety <- plot_richness(PD_patients, x = "anxiety_binned") +
-  xlab("PD_anxiety_level") +geom_boxplot() + ggtitle("PD Anxiety Alpha Diversity Metrics ") + 
-  theme(plot.title = element_text(hjust = 0.5)) + xlab("PD Patient Anxiety Level") 
-gg_richness_anxiety
+###Statistical analysis 
+samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_anxiety), estimate_richness(parkinsons_final_anxiety))
 
-ggsave(filename = "Alpha_diversity_PD_anxiety_level_new.png"
-       , gg_richness_anxiety
-       , height=4, width=6)
+ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=anxiety_binned, y=Shannon)) +
+  facet_grid(~factor(`Disease`, levels=c("PD","Control")))
 
-#Alpha_Diversity with control patients 
-#filter for control patients and remove NAs
-ctrl_patients <- subset_samples(parkinsons_final_anxiety, `Disease` == "Control", !is.na(anxiety_binned))
+# run the 2-way ANOVA on Shannon diversity 
+ml_anxiety_sub <- lm(Shannon ~ `anxiety_binned`*`Disease`, data=samp_dat_wdiv)
+summary(aov(ml_anxiety_sub))
+TukeyHSD(aov(ml_anxiety_sub))
 
-gg_richness_control <- plot_richness(ctrl_patients, x = "anxiety_binned") +
-  xlab("Control_anxiety_level") + geom_boxplot() + ggtitle("Control Anxiety Alpha Diversity Metrics") +
-  theme(plot.title = element_text(hjust = 0.5)) + xlab("Healthy Control Anxiety Level")
-gg_richness_control
+### Linear models ####
+# Linear models are identical to ANOVA when predictors are categorical
+ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=anxiety_binned, y=Shannon)) +
+  facet_grid(~factor(`Disease`))
+summary(ml_anxiety_sub)
 
-#Save PD and Control Alpha Diversity metrics as one figure
-alpha_anxiety <- grid.arrange(gg_richness_anxiety, gg_richness_control, ncol =1)
-ggsave(filename = "alpha_anxiety.png", alpha_anxiety)
 
 ### Beta Diversity ###
 ## Jaccard ## 

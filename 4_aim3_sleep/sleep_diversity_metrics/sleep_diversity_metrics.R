@@ -1,40 +1,103 @@
+### Load libraries ###
 library(phyloseq)
-library(ape)
+library(ape) 
 library(tidyverse)
-library(picante)
 library(vegan)
-library(gridExtra)
 
-#### Load in RData ####
-load("parkinsons_final_sleep.RData")
+#add column combining sleep_problems and Disease status data
+meta <- read.csv("parkinsons_metadata_new_edited.csv")
 
-### Alpha Diversity of PD Patients ###
-#filter for PD patients and remove NAs
-PD_patients <- subset_samples(parkinsons_final_sleep, `Disease` == "PD", !is.na(Sleep_problems))
+sleep_problems_Disease_meta <- meta %>% unite("Sleep_problems_binned_Disease", 
+                                              Sleep_problems, Disease, remove=F)
+### Load data for phyloseq object ###
+meta <- sleep_problems_Disease_meta
 
-#Plot Alpha Diversity Metrics for PD patients with sleep problems
-gg_richness_sleep <- plot_richness(PD_patients, x = "Sleep_problems") +
-  xlab("PD Sleep Problems") +geom_boxplot() + ggtitle("PD Sleep Alpha Diversity Metrics ") + 
-  theme(plot.title = element_text(hjust = 0.5))  
-gg_richness_sleep
+otufp <- "feature-table.txt"
+otu <- read_delim(file = otufp, delim = "\t", skip =1)
 
-ggsave(filename = "Alpha_diversity_PD_sleep.png"
-       , gg_richness_sleep)
+taxfp <- "taxonomy.tsv"
+tax <- read_delim(taxfp, delim = "\t")
 
-#Alpha_Diversity with control patients 
-#filter for control patients and remove NAs
-ctrl_patients <- subset_samples(parkinsons_final_sleep, `Disease` == "Control", !is.na(Sleep_problems))
+phylotreefp <- "tree.nwk"
+phylotree <- read.tree(phylotreefp)
 
-gg_richness_ctrl_sleep <- plot_richness(ctrl_patients, x = "Sleep_problems") +
-  xlab("Control Sleep Problems") + geom_boxplot() + ggtitle("Control Sleep Alpha Diversity Metrics") +
-  theme(plot.title = element_text(hjust = 0.5)) 
-gg_richness_ctrl_sleep
+### Format OTU table ###
+otu_mat <- as.matrix(otu[,-1])
+rownames(otu_mat) <- otu$'#OTU ID'
+OTU <- otu_table(otu_mat, taxa_are_rows = TRUE)
 
-ggsave(filename = "Alpha_diversity_ctrl_sleep.png"
-       , gg_richness_ctrl_sleep)
+### Format sample metadata ###
+samp_df <- as.data.frame(meta[,-1])
+rownames(samp_df) <- meta$'X.SampleID'
 
-alpha_sleep <- grid.arrange(gg_richness_sleep, gg_richness_ctrl_sleep, ncol = 1)
-ggsave(filename = "alpha_sleep_grid.png", alpha_sleep)
+#Make phyloseq sample data with sample_data() function
+SAMP <- sample_data(samp_df)
+
+### Formatting taxonomy ###
+#convert taxon strings to a table with separate taxa rank columns 
+tax_mat <- tax %>% select(-Confidence)%>%
+  separate(col=Taxon, sep="; "
+           , into = c("Domain","Phylum","Class","Order","Family","Genus","Species")) %>%
+  as.matrix() 
+
+# Save everything except feature IDs 
+tax_mat <- tax_mat[,-1]
+
+# Make sampleids the rownames
+rownames(tax_mat) <- tax$`Feature ID`
+
+# Make taxa table
+TAX <- tax_table(tax_mat)
+
+### Make phyloseq object ###
+parkinsons <- phyloseq(OTU, SAMP, TAX, phylotree)
+
+### Analyze phyloseq object ###
+#Remove non-bacterial sequences if any
+parkinsons_filt <- subset_taxa(parkinsons,  Domain == "d__Bacteria" & Class!="c__Chloroplast" & Family !="f__Mitochondria")
+
+
+#Remove ASVs with less than 5 counts total 
+parkinsons_filtnolow <- filter_taxa(parkinsons_filt, function(x) sum(x)>5, prune = TRUE) 
+
+# Remove samples with less than 100 reads
+parkinsons_final <- prune_samples(sample_sums(parkinsons_filtnolow)>100, parkinsons_filtnolow)
+
+# Rarefy samples for diversity metrics
+rarecurve(t(as.data.frame(otu_table(parkinsons_final))), cex=0.1) 
+parkinsons_rare <- rarefy_even_depth(parkinsons_final, rngseed = 1, sample.size = 3797) 
+
+save(parkinsons_final, file = "parkinsons_sleep_problems_disease_final.RData")
+save(parkinsons_rare, file = "parkinsons_sleep_problems_disease_rare.RData")
+
+# Remove samples where anxiety is na
+parkinsons_final_sleep_problems <- subset_samples(parkinsons_rare, Sleep_problems != "")
+View(sample_data(parkinsons_final_sleep_problems))
+save(parkinsons_final_sleep_problems, file="parkinsons_final_sleep_problems.RData")
+
+load("parkinsons_final_sleep_problems.RData")
+
+### Alpha Diversity ###
+gg_richness <- plot_richness(parkinsons_final_sleep_problems, x = "Sleep_problems_binned_Disease") + 
+  xlab("sleep_PD_Status") + geom_boxplot()
+gg_richness
+
+###Statistical analysis 
+samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_sleep_problems), estimate_richness(parkinsons_final_sleep_problems))
+
+ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=Sleep_problems, y=Shannon)) +
+  facet_grid(~factor(`Disease`, levels=c("PD","Control")))
+
+# run the 2-way ANOVA on Shannon diversity 
+ml_sleep_sub <- lm(Shannon ~ `Sleep_problems`*`Disease`, data=samp_dat_wdiv)
+summary(aov(ml_sleep_sub))
+TukeyHSD(aov(ml_sleep_sub))
+
+### Linear models ####
+# Linear models are identical to ANOVA when predictors are categorical
+ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=Sleep_problems, y=Shannon)) +
+  facet_grid(~factor(`Disease`))
+summary(ml_sleep_sub)
 
 ### Beta Diversity ###
 ## Jaccard ## 
