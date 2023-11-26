@@ -203,3 +203,88 @@ gg_wunifrac_pcoa_ctrl <- plot_ordination(parkinsons_final_anxiety, pcoa_w_unifra
   ggside::scale_ysidex_discrete(labels = NULL) +
   ggside::theme_ggside_void() 
 gg_wunifrac_pcoa_ctrl
+
+###############################################################
+## Jaccard -- altogether ##
+jac_dm <- distance(parkinsons_final_anxiety, method = "jaccard", binary = TRUE)
+pcoa_jac <- ordinate(parkinsons_final_anxiety, method = "NMDS", distance = jac_dm)
+gg_jac_pcoa <- plot_ordination(parkinsons_final_anxiety, pcoa_jac, color = "anxiety_binned_Disease") +
+  labs(col = "anxiety and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggside::geom_xsideboxplot(aes(fill = anxiety_binned_Disease, y = anxiety_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = anxiety_binned_Disease, x = anxiety_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() +
+  ggtitle("Jaccard") + theme(plot.title = element_text(hjust=0.5))
+gg_jac_pcoa
+
+ggsave("anxiety_jac_pcoa.png"
+       , gg_jac_pcoa
+       , height=4, width=6)
+
+adonis2(jac_dm ~ `anxiety_binned`*Disease, data = samp_dat_wdiv)
+
+## bray curtis ##
+bray_dm <- distance(parkinsons_final_anxiety, method = "bray")
+pcoa_bray <- ordinate(parkinsons_final_anxiety, method = "PCoA", distance = bray_dm)
+gg_bray_pcoa <- plot_ordination(parkinsons_final_anxiety, pcoa_bray, color = "anxiety_binned_Disease") +
+  labs(col = "anxiety and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Bray Curtis") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggside::geom_xsideboxplot(aes(fill = anxiety_binned_Disease, y = anxiety_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = anxiety_binned_Disease, x = anxiety_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
+gg_bray_pcoa
+
+ggsave("anxiety_bray_pcoa.png"
+       , gg_bray_pcoa
+       , height=4, width=6)
+
+adonis2(bray_dm ~ `anxiety_binned`*Disease, data = samp_dat_wdiv)
+
+## unweighted unifrac ##
+unifrac_dm <- distance(parkinsons_final_anxiety, method = "unifrac")
+pcoa_unifrac <- ordinate(parkinsons_final_anxiety, method = "PCoA", distance = unifrac_dm)
+gg_unifrac_pcoa <- plot_ordination(parkinsons_final_anxiety, pcoa_unifrac, color = "anxiety_binned_Disease") +
+  labs(col = "anxiety and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5))+
+  ggside::geom_xsideboxplot(aes(fill = anxiety_binned_Disease, y = anxiety_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = anxiety_binned_Disease, x = anxiety_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
+gg_unifrac_pcoa
+
+ggsave("anxiety_unifrac_pcoa.png"
+       , gg_unifrac_pcoa
+       , height=4, width=6)
+
+adonis2(unifrac_dm ~ `anxiety_binned`*Disease, data = samp_dat_wdiv)
+
+## weighted_unifrac ##
+w_unifrac_dm <- distance(parkinsons_final_anxiety, method ="wunifrac")
+pcoa_w_unifrac <- ordinate(parkinsons_final_anxiety, method="PCoA", distance=w_unifrac_dm)
+gg_wunifrac_pcoa <- plot_ordination(parkinsons_final_anxiety, pcoa_w_unifrac, color = "anxiety_binned_Disease") +
+  labs(col = "anxiety and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggside::geom_xsideboxplot(aes(fill = anxiety_binned_Disease, y = anxiety_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = anxiety_binned_Disease, x = anxiety_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
+gg_wunifrac_pcoa
+
+ggsave("anxiety_wunifrac_pcoa.png"
+       , gg_wunifrac_pcoa
+       , height=4, width=6)
+
+adonis2(w_unifrac_dm ~ `anxiety_binned`*Disease, data = samp_dat_wdiv)
