@@ -36,9 +36,17 @@ plot.pd
 ### Beta Diversity ###
 ## Jaccard ##
 jac_dm <- distance(parkinsons_final_depression, method = "jaccard", binary = TRUE)
-pcoa_jac <- ordinate(parkinsons_final_depression, method = "PCoa", distance = jac_dm)
-gg_jac_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_jac, color = "depression_binned") +
-  labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) 
+pcoa_jac <- ordinate(parkinsons_final_depression, method = "NMDS", distance = jac_dm)
+gg_jac_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_jac, color = "depression_binned_Disease") +
+  labs(col = "Depression and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggside::geom_xsideboxplot(aes(fill = depression_binned_Disease, y = depression_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = depression_binned_Disease, x = depression_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() +
+  ggtitle("Jaccard") + theme(plot.title = element_text(hjust=0.5))
 gg_jac_pcoa
 
 ggsave("jaccard_pcoa.png"
@@ -48,12 +56,12 @@ ggsave("jaccard_pcoa.png"
 ## bray curtis ##
 bray_dm <- distance(parkinsons_final_depression, method = "bray")
 pcoa_bray <- ordinate(parkinsons_final_depression, method = "PCoA", distance = bray_dm)
-gg_bray_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_bray, color = "depression_binned") +
-  labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
+gg_bray_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_bray, color = "depression_binned_Disease") +
+  labs(col = "Depression and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
   ggtitle("Bray Curtis") + theme(plot.title = element_text(hjust = 0.5)) +
-  ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), 
+  ggside::geom_xsideboxplot(aes(fill = depression_binned_Disease, y = depression_binned_Disease), 
                             orientation = "y") +
-  ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), 
+  ggside::geom_ysideboxplot(aes(fill = depression_binned_Disease, x = depression_binned_Disease), 
                             orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
   ggside::scale_ysidex_discrete(labels = NULL) +
@@ -67,10 +75,16 @@ ggsave("bray_pcoa.png"
 ## unweighted unifrac ##
 unifrac_dm <- distance(parkinsons_final_depression, method = "unifrac")
 pcoa_unifrac <- ordinate(parkinsons_final_depression, method = "PCoA", distance = unifrac_dm)
-gg_unifrac_pcoa <- plot_ordination(parkinsons_final_depressione, pcoa_unifrac, color = "depression_binned") +
-  labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) 
+gg_unifrac_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_unifrac, color = "depression_binned_Disease") +
+  labs(col = "Depression and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5))+
+  ggside::geom_xsideboxplot(aes(fill = depression_binned_Disease, y = depression_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = depression_binned_Disease, x = depression_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
 gg_unifrac_pcoa
 
 ggsave("unifrac_pcoa.png"
@@ -80,18 +94,24 @@ ggsave("unifrac_pcoa.png"
 ## weighted_unifrac ##
 w_unifrac_dm <- distance(parkinsons_final_depression, method ="wunifrac")
 pcoa_w_unifrac <- ordinate(parkinsons_final_depression, method="PCoA", distance=w_unifrac_dm)
-gg_wunifrac_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_w_unifrac, color = "depression_binned") +
-  labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  labs(col = "Depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5))
+gg_wunifrac_pcoa <- plot_ordination(parkinsons_final_depression, pcoa_w_unifrac, color = "depression_binned_Disease") +
+  labs(col = "Depression and Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggside::geom_xsideboxplot(aes(fill = depression_binned_Disease, y = depression_binned_Disease), 
+                            orientation = "y") +
+  ggside::geom_ysideboxplot(aes(fill = depression_binned_Disease, x = depression_binned_Disease), 
+                            orientation = "x") +
+  ggside::scale_xsidey_discrete(labels = NULL) +
+  ggside::scale_ysidex_discrete(labels = NULL) +
+  ggside::theme_ggside_void() 
 gg_wunifrac_pcoa
 
 ggsave("wunifrac_pcoa.png"
        , gg_wunifrac_pcoa
        , height=4, width=5)
 
-beta_div <- grid.arrange(gg_bray_pcoa, gg_unifrac_pcoa, gg_wunifrac_pcoa)
-
+beta_div <- grid.arrange(gg_jac_pcoa, gg_bray_pcoa, gg_unifrac_pcoa, gg_wunifrac_pcoa)
+ggsave(filename = "grid_depression_disease_diversity.png", beta_div, height = 10, width = 19)
 #### Taxonomy bar plots ####
 
 # Convert to relative abundance
