@@ -16,7 +16,7 @@ PD_patients <- subset_samples(parkinsons_final_anxiety, `Disease` == "PD", !is.n
 gg_richness_anxiety <- plot_richness(PD_patients, x = "anxitey_binned") +
   xlab("PD_anxiety_level") +geom_boxplot() + ggtitle("PD Anxiety Alpha Diversity Metrics ") + 
   theme(plot.title = element_text(hjust = 0.5)) + xlab("PD Patient Anxiety Level") 
-gg_richness
+gg_richness_anxiety
 
 ggsave(filename = "Alpha_diversity_PD_anxiety_level_new.png"
        , gg_richness_anxiety
