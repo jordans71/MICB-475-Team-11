@@ -24,6 +24,16 @@ gg_richness_dep_PD
 
 ggsave(filename = "plot_richness_depPD.png", gg_richness_dep_PD, height = 4, width = 10)
 
+samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_depression), estimate_richness(parkinsons_final_depression))
+
+ggplot(samp_dat_wdiv) + geom_boxplot(aes(x=depression_binned, y=Shannon)) +
+  facet_grid(~factor(`Disease`, levels=c("PD","Control")))
+
+# run the 2-way ANOVA on Shannon diversity 
+ml_depression_sub <- lm(Shannon ~ `depression_binned`*`Disease`, data=samp_dat_wdiv)
+summary(aov(ml_depression_sub))
+TukeyHSD(aov(ml_depression_sub))
+
 ### Phylogenetic diversity ###
 #calculate Faith's phylogenetic diversity as PD
 phylo_dist <- pd(t(otu_table(parkinsons_final_depression)), phy_tree(parkinsons_final_depression), 
@@ -52,7 +62,7 @@ gg_jac_pcoa
 ggsave("jaccard_pcoa.png"
        , gg_jac_pcoa
        , height=4, width=5)
-
+adonis2(jac_dm ~ `depression_binned`*Disease, data = samp_dat_wdiv)
 ## bray curtis ##
 bray_dm <- distance(parkinsons_final_depression, method = "bray")
 pcoa_bray <- ordinate(parkinsons_final_depression, method = "PCoA", distance = bray_dm)
@@ -71,7 +81,7 @@ gg_bray_pcoa
 ggsave("bray_pcoa.png"
        , gg_bray_pcoa
        , height=4, width=5)
-
+adonis2(bray_dm ~ `depression_binned`*Disease, data = samp_dat_wdiv)
 ## unweighted unifrac ##
 unifrac_dm <- distance(parkinsons_final_depression, method = "unifrac")
 pcoa_unifrac <- ordinate(parkinsons_final_depression, method = "PCoA", distance = unifrac_dm)
@@ -90,7 +100,7 @@ gg_unifrac_pcoa
 ggsave("unifrac_pcoa.png"
        , gg_unifrac_pcoa
        , height=4, width=5)
-
+adonis2(unifrac_dm ~ `depression_binned`*Disease, data = samp_dat_wdiv)
 ## weighted_unifrac ##
 w_unifrac_dm <- distance(parkinsons_final_depression, method ="wunifrac")
 pcoa_w_unifrac <- ordinate(parkinsons_final_depression, method="PCoA", distance=w_unifrac_dm)
@@ -109,6 +119,7 @@ gg_wunifrac_pcoa
 ggsave("wunifrac_pcoa.png"
        , gg_wunifrac_pcoa
        , height=4, width=5)
+adonis2(w_unifrac_dm ~ `depression_binned`*Disease, data = samp_dat_wdiv)
 
 beta_div <- grid.arrange(gg_jac_pcoa, gg_bray_pcoa, gg_unifrac_pcoa, gg_wunifrac_pcoa)
 ggsave(filename = "grid_depression_disease_diversity.png", beta_div, height = 10, width = 19)
