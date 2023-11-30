@@ -81,6 +81,9 @@ gg_richness <- plot_richness(parkinsons_final_anxiety, x = "anxiety_binned_Disea
   xlab("anxiety_PD_Status") + geom_boxplot()
 gg_richness
 
+ggsave(filename = "plot_richness_anxiety_PD.png", gg_richness, height = 4, width = 10)
+
+
 ###Statistical analysis 
 samp_dat_wdiv <- data.frame(sample_data(parkinsons_final_anxiety), estimate_richness(parkinsons_final_anxiety))
 
