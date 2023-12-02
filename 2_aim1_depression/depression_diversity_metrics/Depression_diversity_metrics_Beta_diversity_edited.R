@@ -29,7 +29,8 @@ samp_dat_wdiv_Ctrl <- data.frame(sample_data(Ctrl_patients), estimate_richness(C
 jac_dm <- distance(PD_patients, method = "jaccard", binary = T)
 pcoa_jac_PD <- ordinate(PD_patients, method = "NMDS", distance = jac_dm)
 PD_depression_jac <- plot_ordination(PD_patients, pcoa_jac_PD, color = "depression_binned") +
-  labs(col = "depression Level") + theme_bw() + stat_ellipse(level = 0.95) +
+  labs(col = "depression status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard_PD_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -47,7 +48,8 @@ adonis2(jac_dm ~ `depression_binned`, data = samp_dat_wdiv_PD)
 jac_dm_ctrl <- distance(Ctrl_patients, method = "jaccard", binary = T)
 pcoa_jac_ctrl <- ordinate(Ctrl_patients, method = "NMDS", distance = jac_dm_ctrl)
 ctrl_depression_jac <- plot_ordination(Ctrl_patients, pcoa_jac_ctrl, color = "depression_binned") + 
-  labs(col = "depression Level") + theme_bw() + stat_ellipse(level = 0.95) +
+  labs(col = "depression status ") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard_Control_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -65,7 +67,8 @@ adonis2(jac_dm_ctrl ~ `depression_binned`, data = samp_dat_wdiv_Ctrl)
 bc_dm <- distance(PD_patients, method="bray")
 pcoa_bc_PD <- ordinate(PD_patients, method="PCoA", distance=bc_dm)
 PD_depression_bray <- plot_ordination(PD_patients, pcoa_bc_PD, color = "depression_binned") + 
-  labs(col = "depression level") + theme_bw() + stat_ellipse(level = 0.95) +
+  labs(col = "depression status ") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Bray_Curtis_PD_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -83,7 +86,8 @@ adonis2(bc_dm ~ `depression_binned`, data = samp_dat_wdiv_PD)
 bc_dm_ctrl <- distance(Ctrl_patients, method="bray")
 pcoa_bc_ctrl <- ordinate(Ctrl_patients, method="PCoA", distance=bc_dm_ctrl)
 ctrl_depression_bray <- plot_ordination(Ctrl_patients, pcoa_bc_ctrl, color = "depression_binned") + 
-  labs(col = "depression level") + theme_bw() + stat_ellipse(level = 0.95) +
+  labs(col = "depression status ") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Bray_Curtis_Control_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -100,8 +104,8 @@ adonis2(bc_dm_ctrl ~ `depression_binned`, data = samp_dat_wdiv_Ctrl)
 unifrac_dm_PD <- distance(PD_patients, method = "unifrac")
 pcoa_unifrac_PD <- ordinate(PD_patients, method = "PCoA", distance = unifrac_dm_PD)
 PD_gg_unifrac_pcoa <- plot_ordination(PD_patients, pcoa_unifrac_PD, color = "depression_binned") +
-  labs(col = "depression Level") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  labs(col = "depression status ") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Unweighted_Unifrac_PD_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -118,8 +122,8 @@ adonis2(unifrac_dm_PD ~ `depression_binned`, data = samp_dat_wdiv_PD)
 unifrac_dm_ctrl <- distance(Ctrl_patients, method = "unifrac")
 pcoa_unifrac_ctrl <- ordinate(Ctrl_patients, method = "PCoA", distance = unifrac_dm_ctrl)
 ctrl_gg_unifrac_pcoa <- plot_ordination(Ctrl_patients, pcoa_unifrac_ctrl, color = "depression_binned") +
-  labs(col = "depression Level") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  labs(col = "depression status ") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Unweighted_Unifrac_Control_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -137,8 +141,8 @@ adonis2(unifrac_dm_ctrl ~ `depression_binned`, data = samp_dat_wdiv_Ctrl)
 w_unifrac_dm_PD <- distance(PD_patients, method ="wunifrac")
 pcoa_w_unifrac_PD <- ordinate(PD_patients, method="PCoA", distance=w_unifrac_dm_PD)
 gg_wunifrac_pcoa_PD <- plot_ordination(PD_patients, pcoa_w_unifrac_PD, color = "depression_binned") +
-  labs(col = "depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  labs(col = "depression status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Weighted_Unifrac_PD_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -158,7 +162,7 @@ w_unifrac_dm_ctrl <- distance(Ctrl_patients, method ="wunifrac")
 pcoa_w_unifrac_ctrl <- ordinate(Ctrl_patients, method="PCoA", distance=w_unifrac_dm_ctrl)
 gg_wunifrac_pcoa_ctrl <- plot_ordination(Ctrl_patients, pcoa_w_unifrac_ctrl, color = "depression_binned") +
   labs(col = "depression Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Weighted_Unifrac_Control_depression") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = depression_binned, y = depression_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = depression_binned, x = depression_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
