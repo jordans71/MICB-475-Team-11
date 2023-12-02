@@ -62,8 +62,7 @@ sample_data(parkinsons)
 tax_table(parkinsons)
 phy_tree(parkinsons)
 
-#to save non-filtered or rarefied phyloseq object
-save(parkinsons, file = "parkinsons2.RData")
+
 
 ######### ANALYZE ##########
 # Remove non-bacterial sequences, if any
