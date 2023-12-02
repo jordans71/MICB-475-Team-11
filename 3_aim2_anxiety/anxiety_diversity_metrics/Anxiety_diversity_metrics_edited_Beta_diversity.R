@@ -30,6 +30,7 @@ jac_dm <- distance(PD_patients, method = "jaccard", binary = T)
 pcoa_jac_PD <- ordinate(PD_patients, method = "NMDS", distance = jac_dm)
 PD_anxiety_jac <- plot_ordination(PD_patients, pcoa_jac_PD, color = "anxiety_binned") +
   labs(col = "Anxiety Level") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard_PD_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -48,6 +49,7 @@ jac_dm_ctrl <- distance(Ctrl_patients, method = "jaccard", binary = T)
 pcoa_jac_ctrl <- ordinate(Ctrl_patients, method = "NMDS", distance = jac_dm_ctrl)
 ctrl_anxiety_jac <- plot_ordination(Ctrl_patients, pcoa_jac_ctrl, color = "anxiety_binned") + 
   labs(col = "Anxiety Level") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard_Control_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -66,6 +68,7 @@ bc_dm <- distance(PD_patients, method="bray")
 pcoa_bc_PD <- ordinate(PD_patients, method="PCoA", distance=bc_dm)
 PD_anxiety_bray <- plot_ordination(PD_patients, pcoa_bc_PD, color = "anxiety_binned") + 
   labs(col = "anxiety level") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Bray_Curtis_PD_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -84,6 +87,7 @@ bc_dm_ctrl <- distance(Ctrl_patients, method="bray")
 pcoa_bc_ctrl <- ordinate(Ctrl_patients, method="PCoA", distance=bc_dm_ctrl)
 ctrl_anxiety_bray <- plot_ordination(Ctrl_patients, pcoa_bc_ctrl, color = "anxiety_binned") + 
   labs(col = "anxiety level") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Bray_Curtis_Control_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -101,7 +105,7 @@ unifrac_dm_PD <- distance(PD_patients, method = "unifrac")
 pcoa_unifrac_PD <- ordinate(PD_patients, method = "PCoA", distance = unifrac_dm_PD)
 PD_gg_unifrac_pcoa <- plot_ordination(PD_patients, pcoa_unifrac_PD, color = "anxiety_binned") +
   labs(col = "Anxiety Level") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Unweighted_Unifrac_PD_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -119,7 +123,7 @@ unifrac_dm_ctrl <- distance(Ctrl_patients, method = "unifrac")
 pcoa_unifrac_ctrl <- ordinate(Ctrl_patients, method = "PCoA", distance = unifrac_dm_ctrl)
 ctrl_gg_unifrac_pcoa <- plot_ordination(Ctrl_patients, pcoa_unifrac_ctrl, color = "anxiety_binned") +
   labs(col = "Anxiety Level") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Unweighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Unweighted_Unifrac_Control_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -138,7 +142,7 @@ w_unifrac_dm_PD <- distance(PD_patients, method ="wunifrac")
 pcoa_w_unifrac_PD <- ordinate(PD_patients, method="PCoA", distance=w_unifrac_dm_PD)
 gg_wunifrac_pcoa_PD <- plot_ordination(PD_patients, pcoa_w_unifrac_PD, color = "anxiety_binned") +
   labs(col = "Anxiety Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Weighted_Unifrac_PD_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
@@ -158,7 +162,7 @@ w_unifrac_dm_ctrl <- distance(Ctrl_patients, method ="wunifrac")
 pcoa_w_unifrac_ctrl <- ordinate(Ctrl_patients, method="PCoA", distance=w_unifrac_dm_ctrl)
 gg_wunifrac_pcoa_ctrl <- plot_ordination(Ctrl_patients, pcoa_w_unifrac_ctrl, color = "anxiety_binned") +
   labs(col = "Anxiety Status") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Weighted Unifrac") + theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Weighted_Unifrac_Control_anxiety") + theme(plot.title = element_text(hjust = 0.5)) +
   ggside::geom_xsideboxplot(aes(fill = anxiety_binned, y = anxiety_binned), orientation = "y") +
   ggside::geom_ysideboxplot(aes(fill = anxiety_binned, x = anxiety_binned), orientation = "x") +
   ggside::scale_xsidey_discrete(labels = NULL) +
