@@ -1,97 +1,29 @@
 #Import libraries
-
-2
 library(tidyverse)
-
-3
 library(phyloseq)
-
-4
 library(ape) 
-
-5
 library(vegan)
-
-6
 library(picante)
-
-7
 ### Load all of the necessary files to make phyloseq object ###
-
-8
 #recreate phlyoseq object with new metadata containing binned depression and anxiety scores
-
-9
 metafp <- "parkinsons_metadata_new_edited.csv"
-
-10
 meta <- read_delim(metafp, delim=",")
-
-11
-
-12
 otufp <- "feature-table.txt"
-
-13
 otu <- read_delim(file = otufp, delim="\t", skip=1)
-
-14
-
-15
 taxfp <- "taxonomy.tsv"
-
-16
 tax <- read_delim(taxfp, delim="\t")
-
-17
-
-18
 phylotreefp <- "tree.nwk"
-
-19
 phylotree <- read.tree(phylotreefp)
-
-20
-
-21
 ## Format OTU Table ##
-
-22
-otu_mat <- as.matrix(otu[,-1])
-
-23
-
-24
+mat <- as.matrix(otu[,-1])
 # Make first column (#OTU ID) the rownames of the new matrix
-
-25
 rownames(otu_mat) <- otu$`#OTU ID`
-
-26
-
-27
 # Use the "otu_table" function to make an OTU table
-
-28
 OTU <- otu_table(otu_mat, taxa_are_rows = TRUE) 
-
-29
-
-30
 ## Format metadata ##
-
-31
 # Save everything except sampleid as new data frame
-
-32
 samp_df <- as.data.frame(meta[,-2])
-
-33
-
-34
 # Make sampleids the rownames
-
-35
 rownames(samp_df)<- meta$'X.SampleID'
 
 36
