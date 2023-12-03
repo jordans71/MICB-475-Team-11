@@ -1,0 +1,21 @@
+,baseMean,log2FoldChange,lfcSE,stat,pvalue,padj,feature,description,,,,,,description,pvalue
+15,75.39894691,-23.26288745,3.294078356,-7.06203221,1.64E-12,1.69E-10,PWY-6728,methylaspartate cycle,,,,,,methylaspartate cycle,1.64E-12
+11,66.75260936,-22.89025703,3.070542889,-7.454791503,9.00E-14,1.39E-11,PWY-5507,adenosylcobalamin biosynthesis I (early cobalt insertion),,,,,,adenosylcobalamin biosynthesis I (early cobalt insertion),9.00E-14
+8,55.05446379,-22.82497211,3.504216024,-6.513574494,7.34E-11,5.67E-09,PWY-3661,glycine betaine degradation I,,,,,,glycine betaine degradation I,7.34E-11
+12,96.56004828,-22.21605972,2.936805785,-7.564701704,3.89E-14,1.20E-11,PWY-5741,ethylmalonyl-CoA pathway,,,,,,ethylmalonyl-CoA pathway,3.89E-14
+2,22.41262614,-21.63669254,4.014219826,-5.390011876,7.05E-08,4.35E-06,CRNFORCAT-PWY,creatinine degradation I,,,,,,creatinine degradation I,7.05E-08
+5,114.0809912,-5.446663906,2.015836104,-2.701937868,0.006893664,0.266267784,METHGLYUT-PWY,superpathway of methylglyoxal degradation,,,,,,superpathway of methylglyoxal degradation,0.006893664
+1,483.8289403,-1.278384225,0.608869138,-2.099604242,0.035763669,0.740906199,CODH-PWY,reductive acetyl coenzyme A pathway,,,,,,reductive acetyl coenzyme A pathway,0.035763669
+6,196.8738148,-1.125904988,0.556674729,-2.022554518,0.043119097,0.740906199,P162-PWY,L-glutamate degradation V (via hydroxyglutarate),,,,,,L-glutamate degradation V (via hydroxyglutarate),0.043119097
+9,1754.770801,-1.117194964,0.486708624,-2.295408196,0.021709742,0.674945319,PWY-4984,urea cycle,,,,,,urea cycle,0.021709742
+13,5245.355105,-0.769931486,0.383099151,-2.009744695,0.044458217,0.740906199,PWY-5989,stearate biosynthesis II (bacteria and plants),,,,,,stearate biosynthesis II (bacteria and plants),0.044458217
+14,5198.979805,-0.761619039,0.378558805,-2.011890964,0.044231432,0.740906199,PWY-6282,palmitoleate biosynthesis I (from (5Z)-dodec-5-enoate),,,,,,palmitoleate biosynthesis I (from (5Z)-dodec-5-enoate),0.044231432
+17,5103.986291,-0.759322659,0.375424953,-2.022568436,0.043117661,0.740906199,PWY0-862,(5Z)-dodec-5-enoate biosynthesis,,,,,,(5Z)-dodec-5-enoate biosynthesis,0.043117661
+3,4506.186408,-0.749275028,0.382154035,-1.960662347,0.049918424,0.740906199,FASYN-INITIAL-PWY,superpathway of fatty acid biosynthesis initiation (E. coli),,,,,,superpathway of fatty acid biosynthesis initiation (E. coli),0.049918424
+16,5548.258619,-0.736264003,0.361695565,-2.035590353,0.041791507,0.740906199,PWY-7664,oleate biosynthesis IV (anaerobic),,,,,,oleate biosynthesis IV (anaerobic),0.041791507
+18,1564.34922,-0.700893112,0.305654582,-2.293088843,0.021842891,0.674945319,PWY490-3,nitrate reduction VI (assimilatory),,,,,,nitrate reduction VI (assimilatory),0.021842891
+19,5442.237247,-0.686813837,0.345112501,-1.99011579,0.046578182,0.740906199,PWYG-321,mycolate biosynthesis,,,,,,mycolate biosynthesis,0.046578182
+10,4606.243733,-0.622603478,0.140818106,-4.421331143,9.81E-06,0.000505188,PWY-5154,L-arginine biosynthesis III (via N-acetyl-L-citrulline),,,,,,L-arginine biosynthesis III (via N-acetyl-L-citrulline),9.81E-06
+7,3056.006124,-0.530949277,0.240785055,-2.205075716,0.027448782,0.706806132,P441-PWY,superpathway of N-acetylneuraminate degradation,,,,,,superpathway of N-acetylneuraminate degradation,0.027448782
+4,974.9548631,0.671808796,0.303618868,2.212671431,0.026920306,0.706806132,FUCCAT-PWY,fucose degradation,,,,,,fucose degradation,0.026920306
+20,864.0167333,0.877442663,0.316895804,2.768868036,0.005625141,0.248309813,TEICHOICACID-PWY,teichoic acid (poly-glycerol) biosynthesis,,,,,,teichoic acid (poly-glycerol) biosynthesis,0.005625141
