@@ -28,7 +28,7 @@ abundance_data  =as.data.frame(abundance_data)
 #rownames(abundance_data_1) = abundance_data_1$pathway
 #abundance_data = abundance_data_1[,-1]
 
-metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
+metadata <- read_delim("parkinsons_metadata_new_edited.csv")
 
 ##ANXIETY IN CONTROL (HEALTHY) PATIENTS##
 
@@ -106,5 +106,3 @@ ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChan
   geom_bar(stat = "identity")+ 
   theme_bw()+
   labs(x = "Log2FoldChange", y="Pathways")
-
-

@@ -34,7 +34,7 @@ abundance_data  =as.data.frame(abundance_data)
 #rownames(abundance_data_1) = abundance_data_1$pathway
 #abundance_data = abundance_data_1[,-1]
 
-metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
+metadata <- read_delim("parkinsons_metadata_new_edited.csv")
 
 library("ggh4x")
 
@@ -117,3 +117,4 @@ ggsave(filename = "Log2FoldChange_Anxiety_PD.png"
        , ggfile
        , height=4, width=10)
 ggfile
+

@@ -1,5 +1,4 @@
-install.packages("ggpicrust2")
-
+#Install packages
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
@@ -12,10 +11,12 @@ for (pkg in pkgs) {
     BiocManager::install(pkg)
 }
 
-install.packages("tidyverse")
-install.packages("DESeq2")
+additional_pckgs <- c("ggpicrust2", "tidyverse")
+if (any(additional_pckgs== F)) {
+  install.packages(packages[!additional_pckgs])
+}
 
-
+#load all packages 
 library(readr)
 library(ggpicrust2)
 library(tibble)
@@ -24,31 +25,21 @@ library(ggprism)
 library(patchwork)
 library(DESeq2)
 source("DESeq2_function.R")
-
+library("ggh4x")
 
 #Importing the pahtway PICrsut2
 abundance_file <- "Picrust analysis _path_abun_unstrat.tsv"
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
 abundance_data  =as.data.frame(abundance_data)
 
-
-#rownames(abundance_data_1) = abundance_data_1$pathway
-#abundance_data = abundance_data_1[,-1]
-
-metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
-
-library("ggh4x")
-
-#Example Looking at sleep problems within PD patients
-##MUST CHANGE SO THAT LOOKING AT DEPRESSION IN CONTROL (HEALTHY) PATIENTS##
+#Read in metadata
+metadata <- read_delim("parkinsons_metadata_new_edited.csv")
 
 #Filter your metadata as needed to look at specific comparisons 
 PD_metadata = metadata %>%
   filter(Disease == "Control")
 
-
 #Remove NAs for depression_binned
-
 PD_metadata = PD_metadata[!is.na(PD_metadata$depression_binned),]
 
 #Filtering the abundance table to only include samples that are in the filtered metadata
@@ -78,12 +69,7 @@ abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
 
-# Generate pathway heatmap
-# Please change column_to_rownames() to the feature column (instead of pathway) if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
-
-
-
+### Generate pathway heatmap ###
 feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 
 #Changing the pathway column to description for the results 
@@ -123,4 +109,4 @@ ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChan
   theme_bw()+
   labs(x = "Log2FoldChange", y="Pathways")
 
-
+write.csv(file = "depression_control_sigres.csv", sig_res)

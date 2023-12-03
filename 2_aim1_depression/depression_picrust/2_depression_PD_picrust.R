@@ -1,5 +1,4 @@
-install.packages("ggpicrust2")
-
+#Install packages
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
@@ -12,7 +11,12 @@ for (pkg in pkgs) {
     BiocManager::install(pkg)
 }
 
+additional_pckgs <- c("ggpicrust2", "tidyverse")
+if (any(additional_pckgs== F)) {
+  install.packages(packages[!additional_pckgs])
+}
 
+#load all packages 
 library(readr)
 library(ggpicrust2)
 library(tibble)
@@ -20,30 +24,22 @@ library(tidyverse)
 library(ggprism)
 library(patchwork)
 library(DESeq2)
+source("DESeq2_function.R")
 library("ggh4x")
 
-source("DESeq2_function.R")
-
-
-#Importing the pahtway PICrsut2
+#Importing the pathway PICrsut2
 abundance_file <- "Picrust analysis _path_abun_unstrat.tsv"
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
 abundance_data  =as.data.frame(abundance_data)
 
-
-#rownames(abundance_data_1) = abundance_data_1$pathway
-#abundance_data = abundance_data_1[,-1]
-
-metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
-
-#Example Looking at depression within PD patients
+#Read in metadata
+metadata <- read_delim("parkinsons_metadata_new_edited.csv")
 
 #Filter your metadata as needed to look at specific comparisons
 PD_metadata = metadata %>%
   filter(Disease == "PD")
 
 #Remove NAs for depression_binned
-
 PD_metadata = PD_metadata[!is.na(PD_metadata$depression_binned),]
 
 #Filtering the abundance table to only include samples that are in the filtered metadata
@@ -66,16 +62,13 @@ rownames(abundance_data_filtered) = NULL
 abun_samples = rownames(t(abundance_data_filtered[,-1])) #Getting a list of the sample names in the newly filtered abundance data
 PD_metadata = PD_metadata[PD_metadata$`X.SampleID` %in% abun_samples,] #making sure the filtered metadata only includes these samples
 
-
-#Perform pathway DAA using LinDA method
+### Perform pathway DAA using LinDA method ###
 abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "depression_binned", daa_method = "DESeq2")
 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
 
-# Generate pathway heatmap
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
+### Generate pathway heatmap ###
 feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 
 # Changing the pathway column to description for the results
@@ -89,10 +82,10 @@ abundance = abundance_data_filtered %>% filter(pathway %in% feature_with_p_0.05$
 colnames(abundance) [1] = "feature"
 abundance_desc = inner_join(abundance, metacyc_daa_annotated_results_df, by = "feature")
 abundance_desc$feature = abundance_desc$description
-abundance_desc = abundance_desc[,-c(105:ncol(abundance_desc))]
+abundance_desc = abundance_desc[,-c(199:ncol(abundance_desc))]
 
-heatmap <- pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "depression_binned")
-heatmap
+PD_depression_heatmap <- pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "depression_binned")
+PD_depression_heatmap
 
 ggsave("PD_depression_heatmap.png"
        , heatmap)
