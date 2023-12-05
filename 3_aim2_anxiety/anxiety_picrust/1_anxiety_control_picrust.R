@@ -1,3 +1,4 @@
+#install packages
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
@@ -10,6 +11,12 @@ for (pkg in pkgs) {
     BiocManager::install(pkg)
 }
 
+additional_pckgs <- c("ggpicrust2", "tidyverse")
+if (any(additional_pckgs== F)) {
+  install.packages(packages[!additional_pckgs])
+}
+
+#load libraries
 library(readr)
 library(ggpicrust2)
 library(tibble)
@@ -20,27 +27,23 @@ library(DESeq2)
 library("ggh4x")
 source("DESeq2_function.R")
 
-#Importing the pahtway PICrsut2
+#Importing the pathway PICrsut2
 abundance_file <- "Picrust analysis _path_abun_unstrat.tsv"
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
 abundance_data  =as.data.frame(abundance_data)
 
-#rownames(abundance_data_1) = abundance_data_1$pathway
-#abundance_data = abundance_data_1[,-1]
-
+#Read in metadata
 metadata <- read_delim("parkinsons_metadata_new_edited.csv")
 
-##ANXIETY IN CONTROL (HEALTHY) PATIENTS##
-
-#Filter your metadata as needed to look at specific comparisons 
-PD_metadata = metadata %>%
+#Filter metadata to look at Controls
+Control_metadata = metadata %>%
   filter(Disease == "Control")
 
-#Remove NAs for depression_binned
-PD_metadata = PD_metadata[!is.na(PD_metadata$anxiety_binned),]
+#Remove NAs for anxiety_binned
+Control_metadata = Control_metadata[!is.na(Control_metadata$anxiety_binned),]
 
 #Filtering the abundance table to only include samples that are in the filtered metadata
-sample_names = PD_metadata$`X.SampleID`
+sample_names = Control_metadata$`X.SampleID`
 sample_names = append(sample_names, "pathway")
 abundance_data_filtered = abundance_data[, colnames(abundance_data) %in% sample_names] #This step is the actual filtering
 
@@ -57,17 +60,15 @@ rownames(abundance_data_filtered) = NULL
 
 #verify samples in metadata match samples in abundance_data
 abun_samples = rownames(t(abundance_data_filtered[,-1])) #Getting a list of the sample names in the newly filtered abundance data
-PD_metadata = PD_metadata[PD_metadata$`X.SampleID` %in% abun_samples,] #making sure the filtered metadata only includes these samples
+Control_metadata = Control_metadata[Control_metadata$`X.SampleID` %in% abun_samples,] #making sure the filtered metadata only includes these samples
 
 #Perform pathway DAA using DESEQ2 method
-abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned", daa_method = "DESeq2")
+abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = Control_metadata, group = "anxiety_binned", daa_method = "DESeq2")
 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
 
-# Generate pathway heatmap
-# Please change column_to_rownames() to the feature column (instead of pathway) if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
+### Generate pathway heatmap ###
 feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 
 #Changing the pathway column to description for the results 
@@ -83,36 +84,42 @@ abundance_desc = inner_join(abundance,metacyc_daa_annotated_results_df, by = "fe
 abundance_desc$feature = abundance_desc$description
 abundance_desc = abundance_desc[,-c(58:ncol(abundance_desc))]
 
-pathway_heatmap(abundance = abundance_desc %>% 
-                  column_to_rownames("feature"), metadata = PD_metadata, group = "anxiety_binned")
+anx_control_heatmap <- pathway_heatmap(abundance = abundance_desc %>% 
+                  column_to_rownames("feature"), metadata = Control_metadata, group = "anxiety_binned")
+anx_control_heatmap
 
 # Generate pathway PCA plot
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
-pathway_pca(abundance = abundance_data_filtered %>% 
-              column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned")
+anx_control_pca <- pathway_pca(abundance = abundance_data_filtered %>% 
+              column_to_rownames("pathway"), metadata = Control_metadata, group = "anxiety_binned")
+anx_control_pca
 
-res =  DEseq2_function(abundance_data_filtered,PD_metadata,"anxiety_binned")
+#Generate log 2 fold change data for yes vs. no samples
+res =  DEseq2_function(abundance_data_filtered,Control_metadata,"anxiety_binned")
 res$feature =rownames(res)
 res_desc = inner_join(res,metacyc_daa_annotated_results_df, by = "feature")
 res_desc = res_desc[, -c(8:13)]
 View(res_desc)
 
+#filter to only keep significant pathways
 sig_res = res_desc %>%
   filter(pvalue < 0.05)
 
+#make log 2 fold change plot
 sig_res <- sig_res[order(sig_res$log2FoldChange),]
-anxiety_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
+anx_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
   geom_bar(stat = "identity")+ 
   theme_bw()+
-  labs(x = "Log Two Fold Change", y="Pathways", fill = "P Value") +
-  theme(axis.text.y = element_blank()) +
-  ggtitle("Anxiety Control Cohort") + theme(plot.title=element_text(hjust = 0.5)) + 
-  guides(fill = "none")
-anxiety_control_log
+  labs(x = "Log Two Fold Change", y=" Metabolic Pathway", fill = "P Value") +
+  theme(axis.text.y = element_text(size = 10)) +
+  ggtitle("Anxiety Control Cohort") + theme(plot.title=element_text(hjust = 0.5)) 
+anx_control_log
 
-ggsave(filename = "Log2FoldChange_Anxiety_Control.png"
-       , anxiety_control_log
-       , height=5, width=5.5)
 
-mean(sig_res$pvalue) #0.02297143
+#Saving figures for manuscript 
+ggsave(filename = "fig3_A_control_pca.png", anx_control_pca,
+       height = 6, width = 9)
+
+ggsave(filename = "fig3_B_control_log.png", anx_control_log, 
+       height = 6, width = 10)
+
+

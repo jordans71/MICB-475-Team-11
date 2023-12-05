@@ -1,3 +1,4 @@
+#Install packages
 install.packages("ggpicrust2")
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
@@ -12,7 +13,10 @@ for (pkg in pkgs) {
     BiocManager::install(pkg)
 }
 
-
+additional_pckgs <- c("ggpicrust2", "tidyverse")
+if (any(additional_pckgs== F)) {
+  install.packages(packages[!additional_pckgs])
+}
 
 library(readr)
 library(ggpicrust2)
@@ -21,30 +25,22 @@ library(tidyverse)
 library(ggprism)
 library(patchwork)
 library(DESeq2)
-
+library("ggh4x")
 source("DESeq2_function.R")
 
-
-#Importing the pahtway PICrsut2
+#Importing the pathway PICrsut2
 abundance_file <- "Picrust analysis _path_abun_unstrat.tsv"
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
 abundance_data  =as.data.frame(abundance_data)
 
-
-#rownames(abundance_data_1) = abundance_data_1$pathway
-#abundance_data = abundance_data_1[,-1]
-
+#Read in metadata
 metadata <- read_delim("parkinsons_metadata_new_edited.csv")
 
-library("ggh4x")
-
-#Example Looking at depression within PD patients
-
-#Filter your metadata as needed to look at specific comparisons
+#Filter for PD patients
 PD_metadata = metadata %>%
   filter(Disease == "PD")
-#Remove NAs for anxitey
 
+#Remove NAs for anxiety
 PD_metadata = PD_metadata[!is.na(PD_metadata$anxiety_binned),]
 
 #Filtering the abundance table to only include samples that are in the filtered metadata
@@ -67,16 +63,13 @@ rownames(abundance_data_filtered) = NULL
 abun_samples = rownames(t(abundance_data_filtered[,-1])) #Getting a list of the sample names in the newly filtered abundance data
 PD_metadata = PD_metadata[PD_metadata$`X.SampleID` %in% abun_samples,] #making sure the filtered metadata only includes these samples
 
-
 #Perform pathway DAA using DESeq2 method
 abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned", daa_method = "DESeq2")
 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
 
-# Generate pathway heatmap
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
+### Generate pathway heatmap ###
 feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 
 #Changing the pathway column to description for the results 
@@ -92,40 +85,37 @@ abundance_desc = inner_join(abundance,metacyc_daa_annotated_results_df, by = "fe
 abundance_desc$feature = abundance_desc$description
 abundance_desc = abundance_desc[,-c(77:ncol(abundance_desc))]
 
-pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "anxiety_binned")
+anx_PD_heatmap <- pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "anxiety_binned")
+anx_PD_heatmap
 
 # Generate pathway PCA plot
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
-pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned")
+anx_PD_pca <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "anxiety_binned")
+anx_PD_pca
 
+#Generate log 2 fold change for yes. vs no samples
 res =  DEseq2_function(abundance_data_filtered,PD_metadata,"anxiety_binned")
 res$feature =rownames(res)
 res_desc = inner_join(res,metacyc_daa_annotated_results_df, by = "feature")
 res_desc = res_desc[, -c(8:13)]
 View(res_desc)
 
+#filter to keep only significant pathways
 sig_res = res_desc %>%
   filter(pvalue < 0.05)
 
+#Make log 2 fold change plot
 sig_res <- sig_res[order(sig_res$log2FoldChange),]
-anxiety_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
+anx_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
   geom_bar(stat = "identity")+
   theme_bw()+
-  labs(x = "Log Two Fold Change", y="Pathways", fill = "P Value") +
-  theme(axis.text.y = element_blank()) +
-  ggtitle("Anxiety PD Cohort") + theme(plot.title=element_text(hjust = 0.5)) +
-  guides(fill = "none")
-anxiety_PD_log
+  labs(x = "Log Two Fold Change", y="Metabolic Pathways", fill = "P Value") +
+  theme(axis.text.y = element_text(size = 10)) +
+  ggtitle("Anxiety PD Cohort") + theme(plot.title=element_text(hjust = 0.5)) 
+anx_PD_log
 
-ggsave(filename = "Log2FoldChange_Anxiety_PD.png"
-       , anxiety_PD_log
-       , height=5, width=5.5)
-ggfile
+#saving figures for manuscript 
+ggsave(filename = "fig3_C_PD_pca.png", anx_PD_pca,
+       height = 6, width = 9)
 
-library(gridExtra)
-anxiety_log <- grid.arrange(anxiety_control_log, anxiety_PD_log, nrow = 1)
-ggsave(filename = "log2fold_anxiety_grid.png", anxiety_log, height = 5, width = 9)
-anxiety_control_log
-
-mean(sig_res$pvalue) #0.0164777
+ggsave(filename = "fig3_D_PD_log.png", anx_PD_log, 
+       height = 6, width = 15)
