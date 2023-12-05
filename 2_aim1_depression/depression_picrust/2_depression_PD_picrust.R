@@ -84,37 +84,38 @@ abundance_desc = inner_join(abundance, metacyc_daa_annotated_results_df, by = "f
 abundance_desc$feature = abundance_desc$description
 abundance_desc = abundance_desc[,-c(199:ncol(abundance_desc))]
 
-PD_depression_heatmap <- pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "depression_binned")
-PD_depression_heatmap
-
-ggsave("PD_depression_heatmap.png"
-       , heatmap)
+dep_PD_heatmap <- pathway_heatmap(abundance = abundance_desc %>% column_to_rownames("feature"), metadata = PD_metadata, group = "depression_binned")
+dep_PD_heatmap
 
 # Generate pathway PCA plot
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
-pathway <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "depression_binned")
-pathway
+dep_PD_pca <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "depression_binned")
+dep_PD_pca
 
-ggsave("PD_depression_pathway_PCA.png"
-       , pathway)
-
+#Generate log 2 fold change data for yes vs. no samples
 res =  DEseq2_function(abundance_data_filtered,PD_metadata,"depression_binned")
 res$feature =rownames(res)
 res_desc = inner_join(res,metacyc_daa_annotated_results_df, by = "feature")
 res_desc = res_desc[, -c(8:13)]
 View(res_desc)
 
+#filter to keep only significant pathways
 sig_res = res_desc %>%
   filter(pvalue < 0.05)
 
+#Make log 2 fold change plot
 sig_res <- sig_res[order(sig_res$log2FoldChange),]
-log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
+dep_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
   geom_bar(stat = "identity")+
   theme_bw()+
-  labs(x = "Log2FoldChange", y="Pathways")
-log
+  labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") +
+  ggtitle("Depression PD Cohort") + theme(plot.title=element_text(hjust = 0.5)) +
+  theme(axis.text = element_text(size = 10))
+dep_PD_log
 
-ggsave("PD_depression_logFoldChange.png"
-       , log)
+#Saving pca and log graphs
+ggsave(filename = "fig2_C_PD_pca.png", dep_PD_pca,
+       height = 6, width = 9)
+
+ggsave(filename = "fig2D_PD_log.png", dep_PD_log, 
+       height = 6, width = 10)
 
