@@ -1,3 +1,4 @@
+#Install packages
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
@@ -10,6 +11,12 @@ for (pkg in pkgs) {
     BiocManager::install(pkg)
 }
 
+additional_pckgs <- c("ggpicrust2", "tidyverse")
+if (any(additional_pckgs== F)) {
+  install.packages(packages[!additional_pckgs])
+}
+
+#Load libraries 
 library(readr)
 library(ggpicrust2)
 library(tibble)
@@ -20,13 +27,12 @@ library(DESeq2)
 library("ggh4x")
 source("DESeq2_function.R")
 
-#Importing the pahtway PICrsut2
+#Importing the pathway PICrsut2
 abundance_file <- "Picrust analysis _path_abun_unstrat.tsv"
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
 abundance_data  =as.data.frame(abundance_data)
 
-#rownames(abundance_data_1) = abundance_data_1$pathway
-#abundance_data = abundance_data_1[,-1]
+#read in metadata
 metadata <- read_delim("Picrust analysis _parkinsons_metadata_new_edited.csv")
 
 #Filter metadata for PD samples
@@ -62,38 +68,54 @@ abundance_daa_results_df <- pathway_daa(abundance = abundance_data_filtered %>% 
 # Annotate MetaCyc pathway results without KO to KEGG conversion
 metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = abundance_daa_results_df, ko_to_kegg = FALSE)
 
-## Generate Heatmap with Description ##
-# Add description of the metabolic pathways to filtered abundance data, relocate the description to the first column
-abundance_data_filtered_with_description <- cbind(abundance_data_filtered, description = metacyc_daa_annotated_results_df$description) %>%
-  relocate(description)
+# Generate pathway heatmap
+feature_with_p_0.05 <- abundance_daa_results_df %>% filter(p_values < 0.05)
 
-# Remove the pathway column
-abundance_data_filtered_with_description = abundance_data_filtered_with_description[,-2]
+#Changing the pathway column to description for the results 
+feature_desc = inner_join(feature_with_p_0.05,metacyc_daa_annotated_results_df, by = "feature")
+feature_desc$feature = feature_desc$description
+feature_desc = feature_desc[,c(1:7)]
+colnames(feature_desc) = colnames(feature_with_p_0.05)
 
-description_p_0.05 <- metacyc_daa_annotated_results_df %>% filter(p_values < 0.05)
-sp_PD_heatmap <- pathway_heatmap(abundance = abundance_data_filtered_with_description %>% filter(description %in% description_p_0.05$description) %>% column_to_rownames("description"), 
-                                      metadata = PD_metadata, 
-                                      group = "Sleep_problems")
-sp_PD_heatmap
+#Changing the pathway column to description for the abundance table
+abundance = abundance_data_filtered %>% filter(pathway %in% feature_with_p_0.05$feature)
+colnames(abundance)[1] = "feature"
+abundance_desc = inner_join(abundance,metacyc_daa_annotated_results_df, by = "feature")
+abundance_desc$feature = abundance_desc$description
+abundance_desc = abundance_desc[,-c(198:ncol(abundance_desc))]
+
+slp_PD_heatmap <- pathway_heatmap(abundance = abundance_desc %>% 
+                  column_to_rownames("feature"), metadata = PD_metadata, group = "Sleep_problems")
+slp_PD_heatmap
 
 # Generate pathway PCA plot
-# Please change column_to_rownames() to the feature column if you are not using example dataset
-# Please change group to "your_group_column" if you are not using example dataset
-sp_PD_pca <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "Sleep_problems")
-sp_PD_pca
+slp_PD_pca <- pathway_pca(abundance = abundance_data_filtered %>% column_to_rownames("pathway"), metadata = PD_metadata, group = "Sleep_problems")
+slp_PD_pca
 
+#Generate log 2 fold change data for yes vs. no samples
 res =  DEseq2_function(abundance_data_filtered,PD_metadata,"Sleep_problems")
 res$feature =rownames(res)
 res_desc = inner_join(res,metacyc_daa_annotated_results_df, by = "feature")
 res_desc = res_desc[, -c(8:13)]
 
+#filter to keep only significant pathways
 sig_res = res_desc %>%
   filter(pvalue < 0.05)
 
+#Make log 2 fold change plot
 sig_res <- sig_res[order(sig_res$log2FoldChange),]
-sp_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
+slp_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
   geom_bar(stat = "identity")+
   theme_bw()+
-  labs(x = "Log2FoldChange", y="Pathways")
-sp_PD_log
+  labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") +
+  ggtitle("Sleep PD Cohort") + theme(plot.title=element_text(hjust=0.5)) +
+  theme(axis.text = element_text(size = 10))
+slp_PD_log
 
+#saving log plot and pca figures
+#saving log plot and pca figures
+ggsave(filename = "fig4_C_control_pca.png", slp_PD_pca, 
+       height = 6, width = 9)
+
+ggsave(filename = "fig4_D_control_log.png", slp_PD_log,
+       height = 6, width = 10)
