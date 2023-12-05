@@ -16,7 +16,7 @@ if (any(additional_pckgs== F)) {
   install.packages(packages[!additional_pckgs])
 }
 
-#load all packages 
+#load libraries
 library(readr)
 library(ggpicrust2)
 library(tibble)
@@ -27,7 +27,7 @@ library(DESeq2)
 source("DESeq2_function.R")
 library("ggh4x")
 
-#Importing the pahtway PICrsut2
+#Importing the pathway PICrsut2
 abundance_file <- "Picrust analysis _path_abun_unstrat.tsv"
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
 abundance_data  =as.data.frame(abundance_data)

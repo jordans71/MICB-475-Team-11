@@ -16,7 +16,7 @@ if (any(additional_pckgs== F)) {
   install.packages(packages[!additional_pckgs])
 }
 
-#load all packages 
+#load libraries 
 library(readr)
 library(ggpicrust2)
 library(tibble)
