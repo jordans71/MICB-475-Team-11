@@ -108,14 +108,21 @@ sig_res <- sig_res[order(sig_res$log2FoldChange),]
 anx_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
   geom_bar(stat = "identity")+
   theme_bw()+
-  labs(x = "Log Two Fold Change", y="Metabolic Pathways", fill = "P Value") +
-  theme(axis.text.y = element_text(size = 10)) +
-  ggtitle("Anxiety PD Cohort") + theme(plot.title=element_text(hjust = 0.5)) 
+  labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") +
+  #theme(axis.text.y = element_text(size = 10)) +
+  ggtitle("Anxiety PD Cohort") + theme(plot.title=element_text(hjust = 0.5)) +
+  guides(fill = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.title=element_text(size=14,face="bold")) +
+  theme(plot.title = element_text(size = 16, face = "bold"))
 anx_PD_log
 
-#saving figures for manuscript 
+#saving log plot and pca for manuscript 
 ggsave(filename = "fig3_C_PD_pca.png", anx_PD_pca,
        height = 6, width = 9)
 
 ggsave(filename = "fig3_D_PD_log.png", anx_PD_log, 
        height = 6, width = 15)
+
+#saving log plot for presentation
+ggsave(filename = "anx_PD.png", anx_PD_log, height = 5, width = 7)

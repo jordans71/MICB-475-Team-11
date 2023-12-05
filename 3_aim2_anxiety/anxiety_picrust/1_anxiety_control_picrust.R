@@ -110,8 +110,12 @@ anx_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.n
   geom_bar(stat = "identity")+ 
   theme_bw()+
   labs(x = "Log Two Fold Change", y=" Metabolic Pathway", fill = "P Value") +
-  theme(axis.text.y = element_text(size = 10)) +
-  ggtitle("Anxiety Control Cohort") + theme(plot.title=element_text(hjust = 0.5)) 
+  #theme(axis.text.y = element_text(size = 10)) +
+  ggtitle("Anxiety Control Cohort") + theme(plot.title=element_text(hjust = 0.5)) +  
+  guides(fill = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.title=element_text(size=14,face="bold")) +
+  theme(plot.title = element_text(size = 16, face = "bold"))
 anx_control_log
 
 
@@ -122,4 +126,5 @@ ggsave(filename = "fig3_A_control_pca.png", anx_control_pca,
 ggsave(filename = "fig3_B_control_log.png", anx_control_log, 
        height = 6, width = 10)
 
-
+#saving log plot for presentation
+ggsave(filename = "anx_control.png", anx_control_log, height = 5, width = 7)

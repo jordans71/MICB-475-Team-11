@@ -109,13 +109,19 @@ slp_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeri
   theme_bw()+
   labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") +
   ggtitle("Sleep PD Cohort") + theme(plot.title=element_text(hjust=0.5)) +
-  theme(axis.text = element_text(size = 10))
+  #theme(axis.text = element_text(size = 10))
+  guides(fill = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.title=element_text(size=14,face="bold")) +
+  theme(plot.title = element_text(size = 16, face = "bold"))
 slp_PD_log
 
-#saving log plot and pca figures
 #saving log plot and pca figures
 ggsave(filename = "fig4_C_control_pca.png", slp_PD_pca, 
        height = 6, width = 9)
 
 ggsave(filename = "fig4_D_control_log.png", slp_PD_log,
        height = 6, width = 10)
+
+#log 2 fold for presentation
+ggsave(filename = "slp_PD.png", slp_PD_log, height = 5, width = 7)

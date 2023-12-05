@@ -110,7 +110,11 @@ dep_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.n
   theme_bw()+
   labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") + 
   ggtitle("Depression Control Cohort") + theme(plot.title=element_text(hjust = 0.5)) +
-  theme(axis.text = element_text(size = 10))
+  theme(axis.text = element_text(size = 10)) +
+  guides(fill = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.title=element_text(size=14,face="bold")) +
+  theme(plot.title = element_text(size = 16, face = "bold"))
 dep_control_log
 
 #Arranging log2fold change and pca plot into one figure
@@ -119,3 +123,7 @@ ggsave(filename = "fig2_A_control_pca.png", dep_control_pca,
 
 ggsave(filename = "fig2_B_control_log.png", dep_control_log, 
        height = 6, width = 10)
+
+#log 2 fold for presentation
+ggsave(filename = "dep_control.png", dep_control_log, height = 5, width = 7)
+

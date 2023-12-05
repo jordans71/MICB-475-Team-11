@@ -109,13 +109,18 @@ dep_PD_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeri
   theme_bw()+
   labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") +
   ggtitle("Depression PD Cohort") + theme(plot.title=element_text(hjust = 0.5)) +
-  theme(axis.text = element_text(size = 10))
+  theme(axis.text = element_text(size = 10)) +
+  #guides(fill = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.title=element_text(size=14,face="bold")) +
+  theme(plot.title = element_text(size = 16, face = "bold"))
 dep_PD_log
 
-#Saving pca and log graphs
+#Saving pca and log graphs for manuscript
 ggsave(filename = "fig2_C_PD_pca.png", dep_PD_pca,
        height = 6, width = 9)
 
-ggsave(filename = "fig2D_PD_log.png", dep_PD_log, 
+ggsave(filename = "fig2_D_PD_log.png", dep_PD_log, 
        height = 6, width = 10)
 
+ggsave(filename = "dep_PD.png", dep_PD_log, height = 5, width = 7)

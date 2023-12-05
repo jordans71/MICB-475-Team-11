@@ -110,7 +110,11 @@ slp_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.n
   theme_bw()+
   labs(x = "Log Two Fold Change", y="Metabolic Pathway", fill = "P Value") +
   ggtitle("Sleep Control Cohort") + theme(plot.title = element_text(hjust=0.5)) +
-  theme(axis.text = element_text(size = 10))
+ # theme(axis.text = element_text(size = 10))
+  guides(fill = "none") +
+  theme(axis.text = element_blank()) +
+  theme(axis.title=element_text(size=14,face="bold")) +
+  theme(plot.title = element_text(size = 16, face = "bold"))
 slp_control_log
 
 #saving log plot and pca figures
@@ -119,3 +123,7 @@ ggsave(filename = "fig4_A_control_pca.png", slp_control_pca,
 
 ggsave(filename = "fig4_B_control_log.png", slp_control_log,
        height = 9, width = 11)
+
+
+#log 2 fold for presentation
+ggsave(filename = "slp_control.png", slp_control_log, height = 5, width = 7)
