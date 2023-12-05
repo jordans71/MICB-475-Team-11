@@ -102,7 +102,17 @@ sig_res = res_desc %>%
   filter(pvalue < 0.05)
 
 sig_res <- sig_res[order(sig_res$log2FoldChange),]
-ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
+anxiety_control_log <- ggplot(data = sig_res, aes(y = reorder(description, sort(as.numeric(log2FoldChange))), x= log2FoldChange, fill = pvalue))+
   geom_bar(stat = "identity")+ 
   theme_bw()+
-  labs(x = "Log2FoldChange", y="Pathways")
+  labs(x = "Log Two Fold Change", y="Pathways", fill = "P Value") +
+  theme(axis.text.y = element_blank()) +
+  ggtitle("Anxiety Control Cohort") + theme(plot.title=element_text(hjust = 0.5)) + 
+  guides(fill = "none")
+anxiety_control_log
+
+ggsave(filename = "Log2FoldChange_Anxiety_Control.png"
+       , anxiety_control_log
+       , height=5, width=5.5)
+
+mean(sig_res$pvalue) #0.02297143
