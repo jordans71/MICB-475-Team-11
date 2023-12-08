@@ -10,7 +10,7 @@ library(ape)
 library(vegan)
 
 # Load Rdata
-load("parkinsons_final_sleep.RData")
+load("C:/Users/cwjle/Downloads/Taxa Bar Plots/parkinsons_final_sleep.RData")
 
 # Extracting OTU data
 otu_table <- data.frame(t(otu_table(parkinsons_final_sleep)))
@@ -165,8 +165,8 @@ data_rel_verrucomicrobiota = data_rel_genus %>%
   summarise(mean_rel_abs = sum(rel_abs))%>% #Add relative abundances together for multiple species that have the same genus
   filter(mean_rel_abs>= 1) #Remove Genus that have a relative abundance less than 1%
 
-data_rel_proteobacteria$Disease = factor(data_rel_proteobacteria$Disease, levels = c("Control","PD")) #create the different levels in the plot
-sleep_plot <- ggplot(data =data_rel_proteobacteria, aes(Sleep_problems,mean_rel_abs, fill = Genus))+
+data_rel_verrucomicrobiota$Disease = factor(data_rel_verrucomicrobiota$Disease, levels = c("Control","PD")) #create the different levels in the plot
+sleep_plot <- ggplot(data =data_rel_verrucomicrobiota, aes(Sleep_problems,mean_rel_abs, fill = Genus))+
   geom_col()+
   theme_bw()+
   theme(axis.text.x = element_text(angle = -90),
