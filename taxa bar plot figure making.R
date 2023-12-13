@@ -305,7 +305,7 @@ sleep_plot <- ggplot(data =data_rel_verrucomicrobiota, aes(Sleep_problems,mean_r
         ,legend.text = element_text(size = 10, face = "bold"),
         legend.title = element_text(size = 15, face = "bold"))+
   facet_grid(cols = vars(Disease), scales = "free_x", space = "free_x")+
-  labs(x = "Sleep problems", y = "Relative abundance (%)")
+  labs(x = "Sleep Problems Verrucomicrobiota Phylum", y = "Relative abundance (%)")
 
 ggsave("sleep_verrucomicrobiata_taxa_bar_plot.png",
        sleep_plot,
@@ -316,7 +316,7 @@ ggsave("sleep_verrucomicrobiata_taxa_bar_plot.png"
        height=5, width=10)
 Verru_tax <- plot_grid(sleep_plot, labels = c('D'))
 Verru_tax
-dep_anxiety_sleep_verru_taxa_bar<- grid.arrange(anxiety_tax, depression_tax,Sleep_tax, Verru_tax, ncol = 1)
+dep_anxiety_sleep_verru_taxa_bar<- grid.arrange(depression_tax, anxiety_tax,Sleep_tax, Verru_tax, ncol = 1)
 dep_anxiety_sleep_verru_taxa_bar
 ggsave("taxa bar plot.png"
        , dep_anxiety_sleep_verru_taxa_bar
