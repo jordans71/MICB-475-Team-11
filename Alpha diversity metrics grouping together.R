@@ -153,7 +153,7 @@ gg_richness_PD <- plot_richness(parkinsons_rare, x = "Disease", measures = c("sh
 ggsave("PD_shannon.png"
        , gg_richness_PD
        , height=4, width=6)
-PD_shannon <- plot_grid(gg_richness_PD,  labels = c('E'))
+PD_shannon <- plot_grid(gg_richness_PD,  labels = c('G'))
 PD_shannon
 
 dep_anxiety_sleep_disease_together_shannon <- grid.arrange(depression_shannon, anxiety_shannon,sleep_shannon, PD_shannon, ncol = 1)
