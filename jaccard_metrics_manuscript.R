@@ -74,7 +74,7 @@ samp_dat_wdiv_Ctrl <- data.frame(sample_data(Ctrl_patients), estimate_richness(C
 jac_dm <- distance(PD_patients, method = "jaccard", binary = T)
 pcoa_jac_PD <- ordinate(PD_patients, method = "NMDS", distance = jac_dm)
 PD_depression_jac <- plot_ordination(PD_patients, pcoa_jac_PD, color = "depression_binned") +
-  labs(col = "Depression") + theme_bw() + stat_ellipse(level = 0.95) +
+  labs(col = "") + theme_bw() + stat_ellipse(level = 0.95) +
   ggtitle("Jaccard PD Depression") + theme(plot.title = element_text(hjust = 0.5)) +
   guides(fill = "none") 
 PD_depression_jac
@@ -102,7 +102,6 @@ depression_jac
 
 
 ####Sleep problems ####
-### Load depression phyloseq Object 
 load("1_make_phyloseq_objects/parkinsons_final_sleep_problems.RData")
 
 #Filter out PD patients 
@@ -123,8 +122,8 @@ samp_dat_wdiv_Ctrl <- data.frame(sample_data(Ctrl_patients), estimate_richness(C
 jac_dm <- distance(PD_patients, method = "jaccard", binary = T)
 pcoa_jac_PD <- ordinate(PD_patients, method = "NMDS", distance = jac_dm)
 PD_Sleep_problems_jac <- plot_ordination(PD_patients, pcoa_jac_PD, color = "Sleep_problems") +
-  labs(col = "Sleep problems") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Jaccard PD Sleep Problems") + theme(plot.title = element_text(hjust = 0.5)) +
+  labs(col = "") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard PD Sleep") + theme(plot.title = element_text(hjust = 0.5)) +
   guides(fill = "none") 
 PD_Sleep_problems_jac
 
@@ -139,7 +138,7 @@ jac_dm_ctrl <- distance(Ctrl_patients, method = "jaccard", binary = T)
 pcoa_jac_ctrl <- ordinate(Ctrl_patients, method = "NMDS", distance = jac_dm_ctrl)
 ctrl_Sleep_problems_jac <- plot_ordination(Ctrl_patients, pcoa_jac_ctrl, color = "Sleep_problems") + 
   labs(col = "Sleep problems") + theme_bw() + stat_ellipse(level = 0.95) +
-  ggtitle("Jaccard Control Sleep Problems") + theme(plot.title = element_text(hjust = 0.5)) 
+  ggtitle("Jaccard Control Sleep") + theme(plot.title = element_text(hjust = 0.5)) 
 ctrl_Sleep_problems_jac
 
 ggsave("ctrl_Sleep_problems _jac_pcoa.png"
@@ -149,7 +148,27 @@ adonis2(jac_dm_ctrl ~ `Sleep_problems`, data = samp_dat_wdiv_Ctrl)
 
 Sleep_problems_jac <- plot_grid(PD_Sleep_problems_jac, ctrl_Sleep_problems_jac, labels = c('E', 'F'))
 Sleep_problems_jac
+##### PD #####
+
+## Jaccard ## 
+#PD patients
+jac_dm <- distance(parkinsons_rare, method = "jaccard", binary = T)
+pcoa_jac_PD <- ordinate(PD_patients_rare, method = "NMDS", distance = jac_dm)
+PD_jac <- plot_ordination(parkinsons_rare, pcoa_jac_PD, color = "Disease") +
+  labs(col = "Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard Disease") + theme(plot.title = element_text(hjust = 0.5)) +
+  guides(fill = "none") 
+PD_jac <- plot_grid(PD_jac, labels = c('G'))
+
+ggsave("PD_jac_pcoa.png"
+       , PD_jac
+       , height=4, width=6)
+
+
 
 library(gridExtra)
-dep_anxiety_together <- grid.arrange(depression_jac, anxiety_jac, ncol = 1)
-dep_anxiety_together
+dep_anxiety_sleep_together <- grid.arrange(depression_jac, anxiety_jac,Sleep_problems_jac, ncol = 1)
+dep_anxiety_sleep_together
+ggsave("Jac_Pcoa.png"
+       , dep_anxiety_sleep_together
+       , height=10, width=8)

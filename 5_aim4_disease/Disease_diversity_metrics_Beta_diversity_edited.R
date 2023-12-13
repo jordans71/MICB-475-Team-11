@@ -80,6 +80,20 @@ parkinsons_rare <- rarefy_even_depth(parkinsons_filt_nolow_samps, rngseed = 1, s
 ###Data frame 
 samp_dat_wdiv <- data.frame(sample_data(parkinsons_rare), estimate_richness(parkinsons_rare))
 
+## Jaccard ## 
+#PD patients
+jac_dm <- distance(parkinsons_rare, method = "jaccard", binary = T)
+pcoa_jac_PD <- ordinate(parkinsons_rare, method = "NMDS", distance = jac_dm)
+PD_jac <- plot_ordination(parkinsons_rare, pcoa_jac_PD, color = "Disease") +
+  labs(col = "Disease Status") + theme_bw() + stat_ellipse(level = 0.95) +
+  ggtitle("Jaccard Disease") + theme(plot.title = element_text(hjust = 0.5)) +
+  guides(fill = "none") 
+PD_jac <- plot_grid(PD_jac, labels = c('G'))
+
+ggsave("PD_jac_pcoa.png"
+       , PD_jac
+       , height=4, width=6)
+PD_jac
 
 
 
