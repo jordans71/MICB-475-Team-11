@@ -84,9 +84,9 @@ View(sample_data(parkinsons_final_anxiety))
 save(parkinsons_final_anxiety, file="parkinsons_final_anxiety.RData")
 
 #remove samples where sleep is na
-parkinsons_final_sleep <- subset_samples(parkinsons_rare, !is.na(Sleep_problems))
-View(sample_data(parkinsons_final_sleep))
-save(parkinsons_final_sleep, file="parkinsons_final_sleep.RData")
+parkinsons_final_sleep_problems <- subset_samples(parkinsons_rare, Sleep_problems != "")
+View(sample_data(parkinsons_final_sleep_problems))
+save(parkinsons_final_sleep_problems, file="parkinsons_final_sleep_problems.RData")
 
 #remove samples where depression is na
 parkinsons_final_depression <- subset_samples(parkinsons_rare, !is.na(depression_binned))
